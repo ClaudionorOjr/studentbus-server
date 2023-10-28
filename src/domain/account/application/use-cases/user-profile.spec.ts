@@ -16,7 +16,6 @@ describe('User profile use case', () => {
     await usersRepository.create(await makeUser({ rule: 'DRIVER' }, 'user-01'))
     const { user } = await sut.execute({ userId: 'user-01' })
 
-    console.log(user)
     expect(user.id).toEqual('user-01')
   })
 })

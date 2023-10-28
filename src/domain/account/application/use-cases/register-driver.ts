@@ -1,6 +1,6 @@
 import { User } from '@core/entities/user'
 import { UsersRepository } from '../repositories/users-repository'
-import { hash } from 'bcryptjs'
+import { HashGenerator } from '@account/cryptography/hash-generator'
 
 interface RegisterDriverUseCaseRequest {
   completeName: string
@@ -10,7 +10,10 @@ interface RegisterDriverUseCaseRequest {
 }
 
 export class RegisterDriverUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private hashGenerator: HashGenerator,
+  ) {}
 
   async execute({
     completeName,
@@ -24,7 +27,7 @@ export class RegisterDriverUseCase {
       throw new Error('User already exists!')
     }
 
-    const passwordHash = await hash(password, 8)
+    const passwordHash = await this.hashGenerator.hash(password)
 
     const driver = User.create({
       completeName,

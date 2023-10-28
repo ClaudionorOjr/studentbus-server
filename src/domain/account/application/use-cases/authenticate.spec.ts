@@ -3,30 +3,36 @@ import { AuthenticateUseCase } from './authenticate'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
 import { hash } from 'bcryptjs'
+import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 
 let usersRepository: InMemoryUsersRepository
+let fakeEncrypter: FakeEncrypter
+let fakeHasher: FakeHasher
 let sut: AuthenticateUseCase
 
 describe('Authenticate use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new AuthenticateUseCase(usersRepository)
+    fakeEncrypter = new FakeEncrypter()
+    fakeHasher = new FakeHasher()
+    sut = new AuthenticateUseCase(usersRepository, fakeHasher, fakeEncrypter)
   })
 
   it('should be able to authenticate an user', async () => {
     await usersRepository.create(
       await makeUser({
         email: 'user@example.com',
-        passwordHash: await hash('123456', 8),
+        passwordHash: await fakeHasher.hash('123456'),
       }),
     )
 
-    const { user } = await sut.execute({
+    const { accessToken } = await sut.execute({
       email: 'user@example.com',
       password: '123456',
     })
 
-    expect(user.id).toEqual(expect.any(String))
+    expect(accessToken).toEqual(expect.any(String))
   })
 
   it('should not be able to authenticate with wrong email', async () => {

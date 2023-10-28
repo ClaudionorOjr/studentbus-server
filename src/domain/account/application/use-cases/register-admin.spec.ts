@@ -2,16 +2,18 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { RegisterAdminUseCase } from './register-admin'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { faker } from '@faker-js/faker'
-import { compare } from 'bcryptjs'
 import { makeUser } from 'test/factories/make-user'
+import { FakeHasher } from 'test/cryptography/fake-hasher'
 
 let usersRepository: InMemoryUsersRepository
+let fakeHasher: FakeHasher
 let sut: RegisterAdminUseCase
 
 describe('Register admin use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new RegisterAdminUseCase(usersRepository)
+    fakeHasher = new FakeHasher()
+    sut = new RegisterAdminUseCase(usersRepository, fakeHasher)
   })
 
   it('should be able to register an admin', async () => {
@@ -36,7 +38,7 @@ describe('Register admin use case', () => {
 
     const adminPasswordHashed = usersRepository.users[0].passwordHash
 
-    const isPasswordCorrectlyHashed = await compare(
+    const isPasswordCorrectlyHashed = await fakeHasher.compare(
       '123456',
       adminPasswordHashed,
     )

@@ -1,7 +1,7 @@
 import { UsersRepository } from '../repositories/users-repository'
-import { hash } from 'bcryptjs'
 import { SolicitationsRepository } from '../repositories/solicitations-repository'
 import { Solicitation } from '@account/enterprise/entities/solicitation'
+import { HashGenerator } from '@account/cryptography/hash-generator'
 
 interface SignUpStudentUseCaseRequest {
   completeName: string
@@ -17,6 +17,7 @@ interface SignUpStudentUseCaseRequest {
 export class SignUpStudentUseCase {
   constructor(
     private usersRepository: UsersRepository,
+    private hashGenerator: HashGenerator,
     private solicitationsRepository: SolicitationsRepository,
   ) {}
 
@@ -36,7 +37,7 @@ export class SignUpStudentUseCase {
       throw new Error('User already exists!')
     }
 
-    const passwordHash = await hash(password, 8)
+    const passwordHash = await this.hashGenerator.hash(password)
 
     const solicitation = Solicitation.create({
       completeName,

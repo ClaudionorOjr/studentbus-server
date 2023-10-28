@@ -1,6 +1,6 @@
+import { HashComparer } from '@account/cryptography/hash-comparer'
 import { UsersRepository } from '../repositories/users-repository'
-import { User } from '@core/entities/user'
-import { compare } from 'bcryptjs'
+import { Encrypter } from '@account/cryptography/encrypter'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -8,11 +8,15 @@ interface AuthenticateUseCaseRequest {
 }
 
 interface AuthenticateUseCaseResponse {
-  user: User
+  accessToken: string
 }
 
 export class AuthenticateUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private hashComparer: HashComparer,
+    private encrypter: Encrypter,
+  ) {}
 
   async execute({
     email,
@@ -24,12 +28,17 @@ export class AuthenticateUseCase {
       throw new Error('Invalid credentials.')
     }
 
-    const doesPasswordMatches = await compare(password, user.passwordHash)
+    const doesPasswordMatches = await this.hashComparer.compare(
+      password,
+      user.passwordHash,
+    )
 
     if (!doesPasswordMatches) {
       throw new Error('Invalid credentials.')
     }
 
-    return { user }
+    const accessToken = await this.encrypter.encrypt({ sub: user.id })
+
+    return { accessToken }
   }
 }

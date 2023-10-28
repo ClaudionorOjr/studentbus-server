@@ -2,16 +2,18 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { RegisterDriverUseCase } from './register-driver'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { faker } from '@faker-js/faker'
-import { compare } from 'bcryptjs'
 import { makeUser } from 'test/factories/make-user'
+import { FakeHasher } from 'test/cryptography/fake-hasher'
 
 let usersRepository: InMemoryUsersRepository
+let fakeHasher: FakeHasher
 let sut: RegisterDriverUseCase
 
 describe('Register driver use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new RegisterDriverUseCase(usersRepository)
+    fakeHasher = new FakeHasher()
+    sut = new RegisterDriverUseCase(usersRepository, fakeHasher)
   })
 
   it('should be able to register a driver', async () => {
@@ -35,7 +37,7 @@ describe('Register driver use case', () => {
     })
 
     const driverPasswordHash = usersRepository.users[0].passwordHash
-    const isPasswordCorrectlyHashed = await compare(
+    const isPasswordCorrectlyHashed = await fakeHasher.compare(
       '123456',
       driverPasswordHash,
     )

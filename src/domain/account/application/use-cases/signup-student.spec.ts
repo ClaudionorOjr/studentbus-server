@@ -3,18 +3,24 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { SignUpStudentUseCase } from './signup-student'
 import { faker } from '@faker-js/faker'
 import { InMemorySolicitationsRepository } from 'test/repositories/in-memory-solicitations-repository'
-import { compare } from 'bcryptjs'
 import { makeUser } from 'test/factories/make-user'
+import { FakeHasher } from 'test/cryptography/fake-hasher'
 
 let usersRepository: InMemoryUsersRepository
+let fakeHasher: FakeHasher
 let solicitationsRepository: InMemorySolicitationsRepository
 let sut: SignUpStudentUseCase
 
 describe('Signup student use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
+    fakeHasher = new FakeHasher()
     solicitationsRepository = new InMemorySolicitationsRepository()
-    sut = new SignUpStudentUseCase(usersRepository, solicitationsRepository)
+    sut = new SignUpStudentUseCase(
+      usersRepository,
+      fakeHasher,
+      solicitationsRepository,
+    )
   })
 
   it('should be able to signup a student', async () => {
@@ -50,7 +56,7 @@ describe('Signup student use case', () => {
     const studentPasswordHash =
       solicitationsRepository.solicitations[0].passwordHash
 
-    const isPasswordCorrectlyHashed = await compare(
+    const isPasswordCorrectlyHashed = await fakeHasher.compare(
       '123456',
       studentPasswordHash,
     )

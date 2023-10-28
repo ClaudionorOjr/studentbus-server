@@ -20,6 +20,7 @@ export class InMemorySolicitationsRepository
     return solicication
   }
 
+  // ! Só está retornando as solicitações que estão como pendentes
   async list(): Promise<Solicitation[]> {
     return this.solicitations.filter(
       (solicitation) => solicitation.status === 'PENDING',

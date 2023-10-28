@@ -1,13 +1,18 @@
 import { Entity } from '@core/entities/entity'
 import { Optional } from '@core/types/optional'
 
-type Weekdays = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY'
+export type Weekdays =
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
 
 export interface BondProps {
   institutionId: string
-  studentId: string
+  userId: string
   course: string
-  period?: string
+  period?: string // ! Devo deixar como opcional?
   turn: 'MORNING' | 'NIGHT' | 'FULL TIME'
   weekdays: Weekdays[]
   // statementOfAffiliation: File
@@ -21,8 +26,8 @@ export class Bond extends Entity<BondProps> {
     return this.props.institutionId
   }
 
-  get studentId() {
-    return this.props.studentId
+  get userId() {
+    return this.props.userId
   }
 
   get course() {
