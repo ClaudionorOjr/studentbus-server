@@ -2,20 +2,20 @@ import { Entity } from '@core/entities/entity'
 import { Optional } from '@core/types/optional'
 
 export interface RouteListProps {
-  driverId: string
+  userId: string
   turn: string
   departureTime: string
   returnTime: string
   capacity: number
-  route: string[]
+  institutions: string[]
   status: boolean
   createdAt: Date
   updatedAt?: Date
 }
 
 export class RouteList extends Entity<RouteListProps> {
-  get driverId() {
-    return this.props.driverId
+  get userId() {
+    return this.props.userId
   }
 
   get turn() {
@@ -34,8 +34,8 @@ export class RouteList extends Entity<RouteListProps> {
     return this.props.capacity
   }
 
-  get route() {
-    return this.props.route
+  get institutions() {
+    return this.props.institutions
   }
 
   get status() {

@@ -1,19 +1,14 @@
 import { Entity } from '@core/entities/entity'
 import { Optional } from '@core/types/optional'
-
-export type Weekdays =
-  | 'MONDAY'
-  | 'TUESDAY'
-  | 'WEDNESDAY'
-  | 'THURSDAY'
-  | 'FRIDAY'
+import { Turn } from '@core/types/turn'
+import { Weekdays } from '@core/types/weekdays'
 
 export interface BondProps {
   institutionId: string
   userId: string
   course: string
   period?: string // ! Devo deixar como opcional?
-  turn: 'MORNING' | 'NIGHT' | 'FULL TIME'
+  turn: Turn
   weekdays: Weekdays[]
   // statementOfAffiliation: File
   createdAt: Date

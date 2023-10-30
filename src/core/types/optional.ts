@@ -10,6 +10,11 @@
  * }
  *
  * Optional<Post, 'id' | 'email'>
+ * type Post {
+ *  id?: string;
+ *  name: string;
+ *  email?: string;
+ * }
  * ```
  **/
 

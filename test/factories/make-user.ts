@@ -40,7 +40,7 @@ export function makeResponsible(
 ) {
   const responsible = Responsible.create(
     {
-      studentId: randomUUID(),
+      userId: randomUUID(),
       responsibleName: faker.person.fullName(),
       responsiblePhone: faker.phone.number(),
       degreeOfKinship: faker.lorem.word(),
