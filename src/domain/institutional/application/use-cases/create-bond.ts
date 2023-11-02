@@ -1,7 +1,8 @@
 import { UsersRepository } from '@account/application/repositories/users-repository'
-import { Bond, Weekdays } from '../../enterprise/entities/bond'
 import { InstitutionsRepository } from '../repositories/institutions-repository'
+import { Bond } from '../../enterprise/entities/bond'
 import { BondsRepository } from '../repositories/bonds-repository'
+import { Weekdays } from '@core/types/weekdays'
 
 interface CreateBondUseCaseRequest {
   institutionId: string
@@ -31,6 +32,10 @@ export class CreateBondUseCase {
 
     if (!user) {
       throw new Error('Student does not exists')
+    }
+
+    if (user.rule !== 'STUDENT') {
+      throw new Error('Non-student users cannot have bonds.')
     }
 
     const institution =

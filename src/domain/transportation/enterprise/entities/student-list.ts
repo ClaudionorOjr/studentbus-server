@@ -3,7 +3,7 @@ import { Optional } from '@core/types/optional'
 
 export interface StudentListProps {
   listId: string
-  studentId: string
+  userId: string
   comeBack: boolean
   onBus: boolean
 }
@@ -13,8 +13,8 @@ export class StudentList extends Entity<StudentListProps> {
     return this.props.listId
   }
 
-  get studentId() {
-    return this.props.studentId
+  get userId() {
+    return this.props.userId
   }
 
   get comeBack() {

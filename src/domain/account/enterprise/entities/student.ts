@@ -9,7 +9,7 @@ export interface StudentProps {
 }
 
 export class Student extends Entity<StudentProps> {
-  /* GETTERS & SETTERS */
+  /* GETTERS AND SETTERS */
   get userId() {
     return this.props.userId
   }

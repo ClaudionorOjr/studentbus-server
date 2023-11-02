@@ -1,23 +1,25 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { AlterPasswordUseCase } from './alter-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { hash, compare } from 'bcryptjs'
 import { makeUser } from 'test/factories/make-user'
+import { FakeHasher } from 'test/cryptography/fake-hasher'
 
 let usersRepository: InMemoryUsersRepository
+let fakerHasher: FakeHasher
 let sut: AlterPasswordUseCase
 
 describe('Alter password use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new AlterPasswordUseCase(usersRepository)
+    fakerHasher = new FakeHasher()
+    sut = new AlterPasswordUseCase(usersRepository, fakerHasher)
   })
 
   it('should be able to alter user password', async () => {
     await usersRepository.create(
-      await makeUser(
+      makeUser(
         {
-          passwordHash: await hash('123456', 6),
+          passwordHash: await fakerHasher.hash('123456'),
         },
         'user-01',
       ),
@@ -31,7 +33,10 @@ describe('Alter password use case', () => {
 
     const newPasswordHash = usersRepository.users[0].passwordHash
 
-    const isNewPasswordHashed = await compare('123123', newPasswordHash!)
+    const isNewPasswordHashed = await fakerHasher.compare(
+      '123123',
+      newPasswordHash,
+    )
 
     expect(isNewPasswordHashed).toBeTruthy()
   })
@@ -47,9 +52,9 @@ describe('Alter password use case', () => {
   })
 
   it('should not be able to alter password when wrong password is passed', async () => {
-    const user = await makeUser(
+    const user = makeUser(
       {
-        passwordHash: await hash('123456', 6),
+        passwordHash: await fakerHasher.hash('123456'),
       },
       'user-01',
     )

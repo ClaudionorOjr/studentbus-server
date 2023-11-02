@@ -26,7 +26,7 @@ describe('Student profile use case', () => {
   })
 
   it('should be able to show the student profile', async () => {
-    await usersRepository.create(await makeUser({}, 'user-01'))
+    await usersRepository.create(makeUser({}, 'user-01'))
     await studentsRepository.create(
       makeStudent({ userId: 'user-01' }, 'student-01'),
     )

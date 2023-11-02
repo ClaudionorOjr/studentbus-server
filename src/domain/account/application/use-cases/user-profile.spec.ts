@@ -13,7 +13,7 @@ describe('User profile use case', () => {
   })
 
   it('should be able to show the user profile', async () => {
-    await usersRepository.create(await makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
     const { user } = await sut.execute({ userId: 'user-01' })
 
     expect(user.id).toEqual('user-01')

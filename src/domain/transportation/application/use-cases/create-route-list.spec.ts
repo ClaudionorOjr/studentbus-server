@@ -24,7 +24,7 @@ describe('Create route list use case', () => {
   })
 
   it('should be able to create a route list', async () => {
-    await usersRepository.create(await makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
     await institutiosRepository.create(
       makeInstitution({ name: 'UERN' }, 'institution-01'),
     )
@@ -54,7 +54,7 @@ describe('Create route list use case', () => {
   })
 
   it('should not be able a non-driver user to create a route list', async () => {
-    await usersRepository.create(await makeUser({ rule: 'STUDENT' }, 'user-01'))
+    await usersRepository.create(makeUser({ rule: 'STUDENT' }, 'user-01'))
 
     await institutiosRepository.create(
       makeInstitution({ name: 'UERN' }, 'institution-01'),
@@ -78,8 +78,8 @@ describe('Create route list use case', () => {
     ).rejects.toBeInstanceOf(Error)
   })
 
-  it('should be able to create a route list', async () => {
-    await usersRepository.create(await makeUser({ rule: 'DRIVER' }, 'user-01'))
+  it('should not be able to create a route list with an unregistered institution', async () => {
+    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
     await institutiosRepository.create(
       makeInstitution({ name: 'UERN' }, 'institution-01'),
     )
@@ -89,8 +89,6 @@ describe('Create route list use case', () => {
     await institutiosRepository.create(
       makeInstitution({ name: 'UNINASSAU' }, 'institution-03'),
     )
-
-    console.log(institutiosRepository.institutions)
 
     await expect(() =>
       sut.execute({

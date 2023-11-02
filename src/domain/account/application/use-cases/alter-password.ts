@@ -1,5 +1,6 @@
-import { compare, hash } from 'bcryptjs'
 import { UsersRepository } from '../repositories/users-repository'
+import { HashComparer } from '@account/cryptography/hash-comparer'
+import { HashGenerator } from '@account/cryptography/hash-generator'
 
 interface AlterPasswordUseCaseRequest {
   userId: string
@@ -8,7 +9,10 @@ interface AlterPasswordUseCaseRequest {
 }
 
 export class AlterPasswordUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private hasher: HashComparer & HashGenerator,
+  ) {}
 
   async execute({
     userId,
@@ -21,13 +25,16 @@ export class AlterPasswordUseCase {
       throw new Error('User does not exists.')
     }
 
-    const doesPasswordMatches = await compare(password, user.passwordHash)
+    const doesPasswordMatches = await this.hasher.compare(
+      password,
+      user.passwordHash,
+    )
 
     if (!doesPasswordMatches) {
       throw new Error('Invalid credentials')
     }
 
-    const newPasswordHash = await hash(newPassword, 8)
+    const newPasswordHash = await this.hasher.hash(newPassword)
 
     user.passwordHash = newPasswordHash
 

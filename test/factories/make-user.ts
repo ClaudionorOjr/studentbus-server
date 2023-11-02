@@ -2,15 +2,14 @@ import { Responsible } from '@account/enterprise/entities/responsible'
 import { Student } from '@account/enterprise/entities/student'
 import { User } from '@core/entities/user'
 import { faker } from '@faker-js/faker'
-import { hash } from 'bcryptjs'
 import { randomUUID } from 'node:crypto'
 
-export async function makeUser(override: Partial<User> = {}, id?: string) {
+export function makeUser(override: Partial<User> = {}, id?: string) {
   const user = User.create(
     {
       completeName: faker.person.fullName(),
       email: faker.internet.email(),
-      passwordHash: await hash(faker.string.alphanumeric(6), 8),
+      passwordHash: faker.internet.password(),
       phone: faker.phone.number(),
       rule: 'STUDENT',
       ...override,

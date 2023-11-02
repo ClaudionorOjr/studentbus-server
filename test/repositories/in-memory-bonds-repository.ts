@@ -7,4 +7,10 @@ export class InMemoryBondsRepository implements BondsRepository {
   async create(bond: Bond): Promise<void> {
     this.bonds.push(bond)
   }
+
+  async findManyByUserId(userId: string): Promise<Bond[]> {
+    const bonds = this.bonds.filter((bond) => bond.userId === userId)
+
+    return bonds
+  }
 }

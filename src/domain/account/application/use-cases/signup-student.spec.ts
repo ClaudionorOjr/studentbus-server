@@ -67,7 +67,7 @@ describe('Signup student use case', () => {
   it('should not be able to register with email already registered', async () => {
     const email = 'johndoe@example.com'
 
-    await usersRepository.create(await makeUser({ email }))
+    await usersRepository.create(makeUser({ email }))
 
     await expect(() => {
       return sut.execute({

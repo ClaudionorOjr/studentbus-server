@@ -24,7 +24,7 @@ describe('Create bond use case', () => {
   })
 
   it('should be able create a bond between the student and the institution', async () => {
-    await usersRepository.create(await makeUser({}, 'user-01'))
+    await usersRepository.create(makeUser({}, 'user-01'))
     await institutionsRepository.create(makeInstitution({}, 'institution-01'))
 
     await sut.execute({
@@ -53,7 +53,7 @@ describe('Create bond use case', () => {
   })
 
   it('should not be able to create a bond with an unregistered institution', async () => {
-    await usersRepository.create(await makeUser({}, 'user-01'))
+    await usersRepository.create(makeUser({}, 'user-01'))
 
     await expect(() =>
       sut.execute({

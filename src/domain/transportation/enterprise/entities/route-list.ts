@@ -8,12 +8,13 @@ export interface RouteListProps {
   returnTime: string
   capacity: number
   institutions: string[]
-  status: boolean
+  open: boolean
   createdAt: Date
   updatedAt?: Date
 }
 
 export class RouteList extends Entity<RouteListProps> {
+  /* GETTERS AND SETTERS */
   get userId() {
     return this.props.userId
   }
@@ -38,13 +39,8 @@ export class RouteList extends Entity<RouteListProps> {
     return this.props.institutions
   }
 
-  get status() {
-    return this.props.status
-  }
-
-  set status(status: boolean) {
-    this.props.status = status
-    this.touch()
+  get open() {
+    return this.props.open
   }
 
   get createdAt() {
@@ -55,19 +51,25 @@ export class RouteList extends Entity<RouteListProps> {
     return this.props.updatedAt
   }
 
+  /* METHODS */
   private touch() {
     this.props.updatedAt = new Date()
   }
 
+  public closeList() {
+    this.props.open = false
+    this.touch()
+  }
+
   static create(
-    props: Optional<RouteListProps, 'createdAt' | 'status'>,
+    props: Optional<RouteListProps, 'createdAt' | 'open'>,
     id?: string,
   ) {
     const routeList = new RouteList(
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
-        status: props.status ?? true,
+        open: props.open ?? true,
       },
       id,
     )

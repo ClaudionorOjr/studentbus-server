@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { AuthenticateUseCase } from './authenticate'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
-import { hash } from 'bcryptjs'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 
@@ -21,7 +20,7 @@ describe('Authenticate use case', () => {
 
   it('should be able to authenticate an user', async () => {
     await usersRepository.create(
-      await makeUser({
+      makeUser({
         email: 'user@example.com',
         passwordHash: await fakeHasher.hash('123456'),
       }),
@@ -46,9 +45,9 @@ describe('Authenticate use case', () => {
 
   it('should not be able to authenticate with wrong password', async () => {
     await usersRepository.create(
-      await makeUser({
+      makeUser({
         email: 'user@example.com',
-        passwordHash: await hash('123458', 8),
+        passwordHash: await fakeHasher.hash('123458'),
       }),
     )
 
