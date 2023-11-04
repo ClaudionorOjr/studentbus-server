@@ -1,14 +1,14 @@
 import { Entity } from '@core/entities/entity'
 import { Optional } from '@core/types/optional'
 
-export interface StudentListProps {
+export interface StudentOnListProps {
   listId: string
   userId: string
   comeBack: boolean
   onBus: boolean
 }
 
-export class StudentList extends Entity<StudentListProps> {
+export class StudentOnList extends Entity<StudentOnListProps> {
   get listId() {
     return this.props.listId
   }
@@ -34,10 +34,10 @@ export class StudentList extends Entity<StudentListProps> {
   }
 
   static create(
-    props: Optional<StudentListProps, 'comeBack' | 'onBus'>,
+    props: Optional<StudentOnListProps, 'comeBack' | 'onBus'>,
     id?: string,
   ) {
-    const studentList = new StudentList(
+    const studentList = new StudentOnList(
       {
         ...props,
         comeBack: props.comeBack ?? true,
