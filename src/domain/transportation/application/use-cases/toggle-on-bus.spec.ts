@@ -15,8 +15,10 @@ let sut: ToggleOnBusUseCase
 describe('toggle on bus use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    routeListsRepository = new InMemoryRouteListsRepository()
     studentListsRepository = new InMemoryStudentListsRepository()
+    routeListsRepository = new InMemoryRouteListsRepository(
+      studentListsRepository,
+    )
     sut = new ToggleOnBusUseCase(
       usersRepository,
       routeListsRepository,
@@ -34,8 +36,6 @@ describe('toggle on bus use case', () => {
         'student-list-01',
       ),
     )
-
-    console.log(studentListsRepository.studentLists[0])
 
     await sut.execute({ userId: 'user-01', studentListId: 'student-list-01' })
 

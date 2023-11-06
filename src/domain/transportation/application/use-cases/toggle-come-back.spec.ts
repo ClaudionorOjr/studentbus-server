@@ -15,8 +15,10 @@ let sut: ToggleComeBackUseCase
 describe('Toggle come back use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    routeListsRepository = new InMemoryRouteListsRepository()
     studentListsRepository = new InMemoryStudentListsRepository()
+    routeListsRepository = new InMemoryRouteListsRepository(
+      studentListsRepository,
+    )
     sut = new ToggleComeBackUseCase(
       usersRepository,
       routeListsRepository,
@@ -52,7 +54,6 @@ describe('Toggle come back use case', () => {
       studentListId: 'student-list-02',
     })
 
-    console.log(studentListsRepository.studentLists)
     expect(studentListsRepository.studentLists).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ comeBack: true }),

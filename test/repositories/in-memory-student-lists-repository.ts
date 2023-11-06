@@ -35,6 +35,14 @@ export class InMemoryStudentListsRepository implements StudentListsRepository {
     this.studentLists.splice(studentIndex, 1)
   }
 
+  async deleteManyByRouteListId(routeListId: string): Promise<void> {
+    const studentLists = this.studentLists.filter(
+      (studentList) => studentList.listId !== routeListId,
+    )
+
+    this.studentLists = studentLists
+  }
+
   async save(studentOnList: StudentOnList): Promise<void> {
     const studentOnListIndex = this.studentLists.findIndex(
       (item) => item.id === studentOnList.id,

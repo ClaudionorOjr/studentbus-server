@@ -5,5 +5,6 @@ export interface StudentListsRepository {
   findById(id: string): Promise<StudentOnList | null>
   findManyByRouteListId(routeListId: string): Promise<StudentOnList[]>
   delete(userId: string, routeListId: string): Promise<void>
+  deleteManyByRouteListId(routeListId: string): Promise<void>
   save(studentOnList: StudentOnList): Promise<void>
 }

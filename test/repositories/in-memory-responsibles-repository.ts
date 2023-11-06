@@ -8,9 +8,9 @@ export class InMemoryResponsiblesRepository implements ResponsiblesRepository {
     this.responsibles.push(responsible)
   }
 
-  async findByStudentId(studentId: string): Promise<Responsible | null> {
+  async findByStudentId(userId: string): Promise<Responsible | null> {
     const responsible = this.responsibles.find(
-      (responsible) => responsible.studentId === studentId,
+      (responsible) => responsible.userId === userId,
     )
 
     if (!responsible) {
