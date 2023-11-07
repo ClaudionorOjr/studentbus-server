@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { randomUUID } from 'node:crypto'
-import { RouteList } from 'src/domain/transportation/enterprise/entities/route-list'
+import { RouteList } from '@transportation/enterprise/entities/route-list'
 
 export function makeRouteList(override: Partial<RouteList> = {}, id?: string) {
   const routeList = RouteList.create(

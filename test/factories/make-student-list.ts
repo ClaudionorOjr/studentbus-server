@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { StudentOnList } from 'src/domain/transportation/enterprise/entities/student-on-list'
+import { StudentOnList } from '@transportation/enterprise/entities/student-on-list'
 
 export function makeStudentList(
   override: Partial<StudentOnList> = {},

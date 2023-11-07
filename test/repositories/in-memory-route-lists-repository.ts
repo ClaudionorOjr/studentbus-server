@@ -1,6 +1,6 @@
 import { PaginationParams } from '@core/repositories/pagination-params'
-import { RouteListsRepository } from 'src/domain/transportation/application/repositories/route-lists-repository'
-import { RouteList } from 'src/domain/transportation/enterprise/entities/route-list'
+import { RouteListsRepository } from '@transportation/application/repositories/route-lists-repository'
+import { RouteList } from '@transportation/enterprise/entities/route-list'
 import { InMemoryStudentListsRepository } from './in-memory-student-lists-repository'
 
 export class InMemoryRouteListsRepository implements RouteListsRepository {

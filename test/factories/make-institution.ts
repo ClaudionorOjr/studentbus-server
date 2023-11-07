@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import {
   Institution,
   InstitutionProps,
-} from 'src/domain/institutional/enterprise/entities/institution'
+} from '@institutional/enterprise/entities/institution'
 
 export function makeInstitution(
   override: Partial<InstitutionProps> = {},

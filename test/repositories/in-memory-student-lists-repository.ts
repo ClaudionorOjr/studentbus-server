@@ -1,5 +1,5 @@
-import { StudentListsRepository } from 'src/domain/transportation/application/repositories/student-lists-repository'
-import { StudentOnList } from 'src/domain/transportation/enterprise/entities/student-on-list'
+import { StudentListsRepository } from '@transportation/application/repositories/student-lists-repository'
+import { StudentOnList } from '@transportation/enterprise/entities/student-on-list'
 
 export class InMemoryStudentListsRepository implements StudentListsRepository {
   public studentLists: StudentOnList[] = []

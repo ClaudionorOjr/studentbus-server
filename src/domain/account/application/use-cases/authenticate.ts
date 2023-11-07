@@ -1,15 +1,20 @@
 import { HashComparer } from '@account/cryptography/hash-comparer'
 import { UsersRepository } from '../repositories/users-repository'
 import { Encrypter } from '@account/cryptography/encrypter'
+import { Either, failure, success } from '@core/either'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 interface AuthenticateUseCaseRequest {
   email: string
   password: string
 }
 
-interface AuthenticateUseCaseResponse {
-  accessToken: string
-}
+type AuthenticateUseCaseResponse = Either<
+  WrongCredentialsError,
+  {
+    accessToken: string
+  }
+>
 
 export class AuthenticateUseCase {
   constructor(
@@ -25,7 +30,7 @@ export class AuthenticateUseCase {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new Error('Invalid credentials.')
+      return failure(new WrongCredentialsError())
     }
 
     const doesPasswordMatches = await this.hashComparer.compare(
@@ -34,11 +39,11 @@ export class AuthenticateUseCase {
     )
 
     if (!doesPasswordMatches) {
-      throw new Error('Invalid credentials.')
+      return failure(new WrongCredentialsError())
     }
 
     const accessToken = await this.encrypter.encrypt({ sub: user.id })
 
-    return { accessToken }
+    return success({ accessToken })
   }
 }

@@ -3,6 +3,8 @@ import { AlterPasswordUseCase } from './alter-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 let usersRepository: InMemoryUsersRepository
 let fakerHasher: FakeHasher
@@ -25,11 +27,13 @@ describe('Alter password use case', () => {
       ),
     )
 
-    await sut.execute({
+    const result = await sut.execute({
       userId: 'user-01',
       password: '123456',
       newPassword: '123123',
     })
+
+    expect(result.isSuccess()).toBe(true)
 
     const newPasswordHash = usersRepository.users[0].passwordHash
 
@@ -42,13 +46,15 @@ describe('Alter password use case', () => {
   })
 
   it('should not be able to alter password a non-existing user', async () => {
-    await expect(() =>
-      sut.execute({
-        userId: 'user-01',
-        password: '121212',
-        newPassword: '122333',
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      password: '121212',
+      newPassword: '122333',
+    })
+
+    expect(result.isFailure()).toBe(true)
+
+    expect(result.value).toBeInstanceOf(UnregisteredUserError)
   })
 
   it('should not be able to alter password when wrong password is passed', async () => {
@@ -61,12 +67,13 @@ describe('Alter password use case', () => {
 
     await usersRepository.create(user)
 
-    await expect(() =>
-      sut.execute({
-        userId: 'user-01',
-        password: '121212',
-        newPassword: '122333',
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      password: '121212',
+      newPassword: '122333',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 })

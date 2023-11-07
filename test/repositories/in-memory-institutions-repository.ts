@@ -1,6 +1,6 @@
 import { PaginationParams } from '@core/repositories/pagination-params'
-import { InstitutionsRepository } from 'src/domain/institutional/application/repositories/institutions-repository'
-import { Institution } from 'src/domain/institutional/enterprise/entities/institution'
+import { InstitutionsRepository } from '@institutional/application/repositories/institutions-repository'
+import { Institution } from '@institutional/enterprise/entities/institution'
 
 export class InMemoryInstitutionsRepository implements InstitutionsRepository {
   public institutions: Institution[] = []

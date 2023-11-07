@@ -4,6 +4,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 let usersRepository: InMemoryUsersRepository
 let fakeEncrypter: FakeEncrypter
@@ -26,21 +27,23 @@ describe('Authenticate use case', () => {
       }),
     )
 
-    const { accessToken } = await sut.execute({
+    const result = await sut.execute({
       email: 'user@example.com',
       password: '123456',
     })
 
-    expect(accessToken).toEqual(expect.any(String))
+    expect(result.isSuccess()).toBe(true)
+    expect(result.value).toEqual({ accessToken: expect.any(String) })
   })
 
   it('should not be able to authenticate with wrong email', async () => {
-    await expect(() => {
-      return sut.execute({
-        email: 'user@example.com',
-        password: '123546',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      email: 'user@example.com',
+      password: '123546',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
   it('should not be able to authenticate with wrong password', async () => {
@@ -51,11 +54,12 @@ describe('Authenticate use case', () => {
       }),
     )
 
-    await expect(() => {
-      return sut.execute({
-        email: 'admin@example.com',
-        password: '123456',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      email: 'user@example.com',
+      password: '123546',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 })

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { randomUUID } from 'node:crypto'
-import { Bond } from 'src/domain/institutional/enterprise/entities/bond'
+import { Bond } from '@institutional/enterprise/entities/bond'
 
 export function makeBond(override: Partial<Bond> = {}, id?: string) {
   const bond = Bond.create(

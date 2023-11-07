@@ -1,7 +1,7 @@
 import { UsersRepository } from '@account/application/repositories/users-repository'
 import { RouteListsRepository } from '../repositories/route-lists-repository'
 import { RouteList } from '../../enterprise/entities/route-list'
-import { InstitutionsRepository } from 'src/domain/institutional/application/repositories/institutions-repository'
+import { InstitutionsRepository } from '@institutional/application/repositories/institutions-repository'
 import { Turn } from '@core/types/turn'
 
 interface CreateRouteListUseCaseRequest {
