@@ -6,6 +6,8 @@ import { makeUser } from 'test/factories/make-user'
 import { makeStudentList } from 'test/factories/make-student-list'
 import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-lists-repository'
 import { makeRouteList } from 'test/factories/make-route-list'
+import { NotAllowedError } from '@core/errors/not-allowerd-error'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 let usersRepository: InMemoryUsersRepository
 let routeListsRepository: InMemoryRouteListsRepository
@@ -45,7 +47,7 @@ describe('Toggle come back use case', () => {
       ),
     )
 
-    await sut.execute({
+    const result1 = await sut.execute({
       userId: 'user-01',
       studentListId: 'student-list-01',
     })
@@ -54,6 +56,7 @@ describe('Toggle come back use case', () => {
       studentListId: 'student-list-02',
     })
 
+    expect(result1.isSuccess()).toBe(true)
     expect(studentListsRepository.studentLists).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ comeBack: true }),
@@ -62,25 +65,32 @@ describe('Toggle come back use case', () => {
     )
   })
 
+  it('should not be able a non-existent user to toggle "come back" information', async () => {
+    const result = await sut.execute({
+      userId: 'user-01',
+      studentListId: 'student-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredUserError)
+  })
+
   it('should not be able to toggle "come back" information to another user', async () => {
     await usersRepository.create(makeUser({}, 'user-01'))
-    await usersRepository.create(makeUser({}, 'user-02'))
 
     await routeListsRepository.create(makeRouteList({}, 'route-list-01'))
 
     await studentListsRepository.create(
-      makeStudentList(
-        { userId: 'user-01', listId: 'route-list-01' },
-        'student-list-01',
-      ),
+      makeStudentList({ listId: 'route-list-01' }, 'student-list-01'),
     )
 
-    await expect(() =>
-      sut.execute({
-        userId: 'user-02',
-        studentListId: 'student-list-01',
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      studentListId: 'student-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should not be able to toggle "come back" information of a closed route list', async () => {
@@ -97,11 +107,12 @@ describe('Toggle come back use case', () => {
       ),
     )
 
-    await expect(() =>
-      sut.execute({
-        userId: 'user-01',
-        studentListId: 'student-list-01',
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      studentListId: 'student-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

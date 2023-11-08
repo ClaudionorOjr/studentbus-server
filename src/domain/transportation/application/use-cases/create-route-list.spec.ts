@@ -5,17 +5,26 @@ import { InMemoryInstitutionsRepository } from 'test/repositories/in-memory-inst
 import { makeUser } from 'test/factories/make-user'
 import { makeInstitution } from 'test/factories/make-institution'
 import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-lists-repository'
+import { InMemoryStudentListsRepository } from 'test/repositories/in-memory-student-lists-repository'
+import { NotAllowedError } from '@core/errors/not-allowerd-error'
+import { UnregisteredInstitutionError } from '@institutional/application/use-cases/errors/unregistered-institution-error'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 let usersRepository: InMemoryUsersRepository
 let institutiosRepository: InMemoryInstitutionsRepository
 let routeListsRepository: InMemoryRouteListsRepository
+let studentListsRepository: InMemoryStudentListsRepository
 let sut: CreateRouteListUseCase
 
 describe('Create route list use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     institutiosRepository = new InMemoryInstitutionsRepository()
-    routeListsRepository = new InMemoryRouteListsRepository()
+    studentListsRepository = new InMemoryStudentListsRepository()
+
+    routeListsRepository = new InMemoryRouteListsRepository(
+      studentListsRepository,
+    )
     sut = new CreateRouteListUseCase(
       usersRepository,
       institutiosRepository,
@@ -35,7 +44,7 @@ describe('Create route list use case', () => {
       makeInstitution({ name: 'UNINASSAU' }, 'institution-03'),
     )
 
-    await sut.execute({
+    const result = await sut.execute({
       userId: 'user-01',
       departureTime: '17:30',
       returnTime: '22:00',
@@ -44,6 +53,8 @@ describe('Create route list use case', () => {
       institutions: ['UERN', 'UFERSA'],
     })
 
+    expect(result.isSuccess()).toBe(true)
+
     // expect.arrayContaining([expect.any(String)]) ou expect.any(Array<string>)
     expect(routeListsRepository.routeLists).toHaveLength(1)
     expect(routeListsRepository.routeLists).toEqual([
@@ -51,6 +62,20 @@ describe('Create route list use case', () => {
         institutions: ['UERN', 'UFERSA'],
       }),
     ])
+  })
+
+  it('should not be able a non-existent user to create a route list', async () => {
+    const result = await sut.execute({
+      userId: 'user-01',
+      departureTime: '17:30',
+      returnTime: '22:00',
+      turn: 'MORNING',
+      capacity: 45,
+      institutions: ['UERN', 'UFERSA'],
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredUserError)
   })
 
   it('should not be able a non-driver user to create a route list', async () => {
@@ -66,16 +91,17 @@ describe('Create route list use case', () => {
       makeInstitution({ name: 'UNINASSAU' }, 'institution-03'),
     )
 
-    await expect(() =>
-      sut.execute({
-        userId: 'user-01',
-        departureTime: '17:30',
-        returnTime: '22:00',
-        turn: 'MORNING',
-        capacity: 45,
-        institutions: ['UERN', 'UFERSA'],
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      departureTime: '17:30',
+      returnTime: '22:00',
+      turn: 'MORNING',
+      capacity: 45,
+      institutions: ['UERN', 'UFERSA'],
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should not be able to create a route list with an unregistered institution', async () => {
@@ -90,15 +116,15 @@ describe('Create route list use case', () => {
       makeInstitution({ name: 'UNINASSAU' }, 'institution-03'),
     )
 
-    await expect(() =>
-      sut.execute({
-        userId: 'user-01',
-        departureTime: '17:30',
-        returnTime: '22:00',
-        turn: 'MORNING',
-        capacity: 45,
-        institutions: ['IFRN', 'UERN', 'UFERSA'],
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      departureTime: '17:30',
+      returnTime: '22:00',
+      turn: 'MORNING',
+      capacity: 45,
+      institutions: ['IFRN', 'UERN', 'UFERSA'],
+    })
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredInstitutionError)
   })
 })

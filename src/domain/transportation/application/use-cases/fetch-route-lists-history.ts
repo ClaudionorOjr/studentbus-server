@@ -1,3 +1,4 @@
+import { Either, success } from '@core/either'
 import { RouteList } from '../../enterprise/entities/route-list'
 import { RouteListsRepository } from '../repositories/route-lists-repository'
 
@@ -5,9 +6,12 @@ interface FetchRouteListsHistoryRequest {
   page: number
 }
 
-interface FetchRouteListsHistoryResponse {
-  routeLists: RouteList[]
-}
+type FetchRouteListsHistoryResponse = Either<
+  null,
+  {
+    routeLists: RouteList[]
+  }
+>
 
 export class FetchRouteListsHistory {
   constructor(private routeListsRepository: RouteListsRepository) {}
@@ -17,6 +21,6 @@ export class FetchRouteListsHistory {
   }: FetchRouteListsHistoryRequest): Promise<FetchRouteListsHistoryResponse> {
     const routeLists = await this.routeListsRepository.list({ page })
 
-    return { routeLists }
+    return success({ routeLists })
   }
 }

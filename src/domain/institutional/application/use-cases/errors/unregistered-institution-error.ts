@@ -4,7 +4,11 @@ export class UnregisteredInstitutionError
   extends Error
   implements UseCaseError
 {
-  constructor() {
-    super('Institution does not exist.')
+  constructor(identifier?: string) {
+    super(
+      identifier
+        ? `Institution ${identifier} does not exist.`
+        : 'Institution does not exist.',
+    )
   }
 }

@@ -5,6 +5,9 @@ import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-
 import { InMemoryStudentListsRepository } from 'test/repositories/in-memory-student-lists-repository'
 import { makeUser } from 'test/factories/make-user'
 import { makeRouteList } from 'test/factories/make-route-list'
+import { NotAllowedError } from '@core/errors/not-allowerd-error'
+import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
+import { UserAlreadyOnListError } from './errors/user-already-on-list-error'
 
 let usersRepository: InMemoryUsersRepository
 let routeListsRepository: InMemoryRouteListsRepository
@@ -14,8 +17,10 @@ let sut: EnterListUseCase
 describe('Enter list use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    routeListsRepository = new InMemoryRouteListsRepository()
     studentListsRepository = new InMemoryStudentListsRepository()
+    routeListsRepository = new InMemoryRouteListsRepository(
+      studentListsRepository,
+    )
     sut = new EnterListUseCase(
       usersRepository,
       routeListsRepository,
@@ -27,8 +32,12 @@ describe('Enter list use case', () => {
     await usersRepository.create(makeUser({}, 'user-01'))
     await routeListsRepository.create(makeRouteList({}, 'route-list-01'))
 
-    await sut.execute({ userId: 'user-01', listId: 'route-list-01' })
+    const result = await sut.execute({
+      userId: 'user-01',
+      listId: 'route-list-01',
+    })
 
+    expect(result.isSuccess()).toBe(true)
     expect(studentListsRepository.studentLists).toHaveLength(1)
     expect(studentListsRepository.studentLists[0]).toEqual(
       expect.objectContaining({ comeBack: true, onBus: false }),
@@ -38,17 +47,25 @@ describe('Enter list use case', () => {
   it('should not be able for non-student user to enter list', async () => {
     await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', listId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      listId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should not be able to join a non-existent list', async () => {
     await usersRepository.create(makeUser({}, 'user-01'))
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', listId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      listId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 
   it('should not be able for a user to join a list that is already on the list', async () => {
@@ -57,9 +74,13 @@ describe('Enter list use case', () => {
 
     await sut.execute({ userId: 'user-01', listId: 'route-list-01' })
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', listId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      listId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyOnListError)
   })
 
   it('should not be able to join a list if it is closed', async () => {
@@ -68,8 +89,12 @@ describe('Enter list use case', () => {
       makeRouteList({ open: false }, 'route-list-01'),
     )
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', listId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      listId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

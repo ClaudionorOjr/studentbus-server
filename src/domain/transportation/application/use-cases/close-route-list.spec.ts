@@ -4,15 +4,23 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-lists-repository'
 import { makeUser } from 'test/factories/make-user'
 import { makeRouteList } from 'test/factories/make-route-list'
+import { InMemoryStudentListsRepository } from 'test/repositories/in-memory-student-lists-repository'
+import { NotAllowedError } from '@core/errors/not-allowerd-error'
+import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 let usersRepository: InMemoryUsersRepository
 let routeListsRepository: InMemoryRouteListsRepository
+let studentListsRepository: InMemoryStudentListsRepository
 let sut: CloseRouteList
 
 describe('Close route list use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    routeListsRepository = new InMemoryRouteListsRepository()
+    studentListsRepository = new InMemoryStudentListsRepository()
+
+    routeListsRepository = new InMemoryRouteListsRepository(
+      studentListsRepository,
+    )
     sut = new CloseRouteList(usersRepository, routeListsRepository)
   })
 
@@ -24,8 +32,12 @@ describe('Close route list use case', () => {
 
     expect(routeListsRepository.routeLists[0].open).toBeTruthy()
 
-    await sut.execute({ userId: 'user-01', routeListId: 'route-list-01' })
+    const result = await sut.execute({
+      userId: 'user-01',
+      routeListId: 'route-list-01',
+    })
 
+    expect(result.isSuccess()).toBe(true)
     expect(routeListsRepository.routeLists[0].open).toBeFalsy()
   })
 
@@ -33,17 +45,25 @@ describe('Close route list use case', () => {
     await usersRepository.create(makeUser({ rule: 'STUDENT' }, 'user-01'))
     await routeListsRepository.create(makeRouteList({}, 'route-list-01'))
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', routeListId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      routeListId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should not be able to close a non-existent route list', async () => {
-    await usersRepository.create(makeUser({ rule: 'STUDENT' }, 'user-01'))
+    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', routeListId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      routeListId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 
   it('should not be able to close a route list created by another driver', async () => {
@@ -52,8 +72,12 @@ describe('Close route list use case', () => {
       makeRouteList({ userId: 'user-02' }, 'route-list-01'),
     )
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', routeListId: 'route-list-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      routeListId: 'route-list-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })
