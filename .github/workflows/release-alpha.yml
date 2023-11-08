@@ -1,10 +1,12 @@
-name: Release
+name: Release-alpha
 
 on:
   workflow_run:
     workflows: [Run Unit Tests]
     types:
       - completed
+    branches:
+      - alpha
 
 jobs:
   on-success:
