@@ -4,6 +4,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { InMemoryBondsRepository } from 'test/repositories/in-memory-bonds-repository'
 import { makeUser } from 'test/factories/make-user'
 import { makeBond } from 'test/factories/make-bond'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 let usersRepository: InMemoryUsersRepository
 let bondsRepository: InMemoryBondsRepository
@@ -23,8 +24,20 @@ describe('Fetch student bonds use case', () => {
 
     expect(bondsRepository.bonds).toHaveLength(2)
 
-    const { bonds } = await sut.execute({ userId: 'user-01' })
+    const result = await sut.execute({ userId: 'user-01' })
 
-    expect(bonds).toHaveLength(1)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.value).toEqual({
+      bonds: expect.arrayContaining([
+        expect.objectContaining({ userId: 'user-01' }),
+      ]),
+    })
+  })
+
+  it('should not be able to fetch bonds of a non-existent student', async () => {
+    const result = await sut.execute({ userId: 'user-01' })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredUserError)
   })
 })

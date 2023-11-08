@@ -1,9 +1,13 @@
 import { Solicitation } from '@account/enterprise/entities/solicitation'
 import { SolicitationsRepository } from '../repositories/solicitations-repository'
+import { Either, success } from '@core/either'
 
-interface FetchPendingSolicitationsUseCaseResponse {
-  solicitations: Solicitation[]
-}
+type FetchPendingSolicitationsUseCaseResponse = Either<
+  null,
+  {
+    solicitations: Solicitation[]
+  }
+>
 
 export class FetchPendingSolicitationsUseCase {
   constructor(private solicitationsRepository: SolicitationsRepository) {}
@@ -11,6 +15,6 @@ export class FetchPendingSolicitationsUseCase {
   async execute(): Promise<FetchPendingSolicitationsUseCaseResponse> {
     const solicitations = await this.solicitationsRepository.list()
 
-    return { solicitations }
+    return success({ solicitations })
   }
 }

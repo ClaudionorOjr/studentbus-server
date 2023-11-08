@@ -1,6 +1,8 @@
+import { Either, failure, success } from '@core/either'
 import { ResponsiblesRepository } from '../repositories/responsibles-repository'
 import { StudentsRepository } from '../repositories/students-repository'
 import { UsersRepository } from '../repositories/users-repository'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 interface EditStudentProfileUseCaseRequest {
   userId: string
@@ -11,6 +13,8 @@ interface EditStudentProfileUseCaseRequest {
   responsiblePhone?: string
   degreeOfKinship?: string
 }
+
+type EditStudentProfileUseCaseResponse = Either<UnregisteredUserError, object>
 
 export class EditStudentProfileUseCase {
   constructor(
@@ -27,17 +31,17 @@ export class EditStudentProfileUseCase {
     responsibleName,
     responsiblePhone,
     degreeOfKinship,
-  }: EditStudentProfileUseCaseRequest): Promise<void> {
+  }: EditStudentProfileUseCaseRequest): Promise<EditStudentProfileUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
-      throw new Error('User not found.')
+      return failure(new UnregisteredUserError())
     }
 
     const student = await this.studentsRepository.findByUserId(userId)
 
     if (!student) {
-      throw new Error('Student not found.')
+      return failure(new UnregisteredUserError())
     }
 
     user.completeName = completeName ?? user.completeName
@@ -62,5 +66,7 @@ export class EditStudentProfileUseCase {
 
       await this.responsiblesRepository.save(responsible)
     }
+
+    return success({})
   }
 }

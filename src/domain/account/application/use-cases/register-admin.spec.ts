@@ -4,6 +4,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { faker } from '@faker-js/faker'
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let usersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
@@ -17,14 +18,14 @@ describe('Register admin use case', () => {
   })
 
   it('should be able to register an admin', async () => {
-    await sut.execute({
+    const result = await sut.execute({
       completeName: faker.person.fullName(),
       email: faker.internet.email(),
       password: '123456',
       phone: faker.phone.number(),
     })
 
-    expect(usersRepository.users).toHaveLength(1)
+    expect(result.isSuccess()).toBe(true)
     expect(usersRepository.users[0].rule).toEqual('ADMIN')
   })
 
@@ -51,13 +52,14 @@ describe('Register admin use case', () => {
 
     await usersRepository.create(makeUser({ email }))
 
-    await expect(() => {
-      return sut.execute({
-        completeName: faker.person.fullName(),
-        email,
-        password: '123456',
-        phone: faker.phone.number(),
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      completeName: faker.person.fullName(),
+      email,
+      password: '123456',
+      phone: faker.phone.number(),
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 })

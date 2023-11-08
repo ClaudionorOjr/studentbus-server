@@ -4,6 +4,8 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { InMemoryInstitutionsRepository } from 'test/repositories/in-memory-institutions-repository'
 import { makeUser } from 'test/factories/make-user'
 import { makeInstitution } from 'test/factories/make-institution'
+import { UnregisteredInstitutionError } from './errors/unregistered-institution-error'
+import { NotAllowedError } from '@core/errors/not-allowerd-error'
 
 let usersRepository: InMemoryUsersRepository
 let institutionsRepository: InMemoryInstitutionsRepository
@@ -22,17 +24,25 @@ describe('Delete institution use case', () => {
 
     expect(institutionsRepository.institutions).toHaveLength(1)
 
-    await sut.execute({ userId: 'user-01', institutionId: 'institution-01' })
+    const result = await sut.execute({
+      userId: 'user-01',
+      institutionId: 'institution-01',
+    })
 
+    expect(result.isSuccess()).toBe(true)
     expect(institutionsRepository.institutions).toHaveLength(0)
   })
 
   it('should not be able to delete a non-existent institution ', async () => {
     await usersRepository.create(makeUser({ rule: 'ADMIN' }, 'user-01'))
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', institutionId: 'institution-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      institutionId: 'institution-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredInstitutionError)
   })
 
   it('should not be able a not admin user to delete an institution', async () => {
@@ -41,8 +51,12 @@ describe('Delete institution use case', () => {
 
     expect(institutionsRepository.institutions).toHaveLength(1)
 
-    await expect(() =>
-      sut.execute({ userId: 'user-01', institutionId: 'institution-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'user-01',
+      institutionId: 'institution-01',
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

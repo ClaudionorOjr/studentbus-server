@@ -19,9 +19,10 @@ describe('Fetch solicitations use case', () => {
       await makeSolicitation({ status: 'REFUSED' }),
     )
 
-    const { solicitations } = await sut.execute()
+    const result = await sut.execute()
 
-    expect(solicitations).toHaveLength(2)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.value?.solicitations).toHaveLength(2)
     expect(solicitationsRepository.solicitations).toHaveLength(3)
   })
 })

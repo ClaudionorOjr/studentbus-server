@@ -2,6 +2,8 @@ import { UsersRepository } from '../repositories/users-repository'
 import { SolicitationsRepository } from '../repositories/solicitations-repository'
 import { Solicitation } from '@account/enterprise/entities/solicitation'
 import { HashGenerator } from '@account/cryptography/hash-generator'
+import { Either, failure, success } from '@core/either'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 interface SignUpStudentUseCaseRequest {
   completeName: string
@@ -13,6 +15,8 @@ interface SignUpStudentUseCaseRequest {
   responsiblePhone?: string
   degreeOfKinship?: string
 }
+
+type SignUpStudentUseCaseResponse = Either<UserAlreadyExistsError, object>
 
 export class SignUpStudentUseCase {
   constructor(
@@ -30,11 +34,11 @@ export class SignUpStudentUseCase {
     responsibleName,
     responsiblePhone,
     degreeOfKinship,
-  }: SignUpStudentUseCaseRequest): Promise<void> {
+  }: SignUpStudentUseCaseRequest): Promise<SignUpStudentUseCaseResponse> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
-      throw new Error('User already exists!')
+      return failure(new UserAlreadyExistsError())
     }
 
     const passwordHash = await this.hashGenerator.hash(password)
@@ -51,5 +55,7 @@ export class SignUpStudentUseCase {
     })
 
     await this.solicitationsRepository.create(solicitation)
+
+    return success({})
   }
 }

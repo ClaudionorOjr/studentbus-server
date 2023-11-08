@@ -5,6 +5,8 @@ import { InMemoryInstitutionsRepository } from 'test/repositories/in-memory-inst
 import { InMemoryBondsRepository } from 'test/repositories/in-memory-bonds-repository'
 import { makeUser } from 'test/factories/make-user'
 import { makeInstitution } from 'test/factories/make-institution'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
+import { UnregisteredInstitutionError } from './errors/unregistered-institution-error'
 
 let usersRepository: InMemoryUsersRepository
 let institutionsRepository: InMemoryInstitutionsRepository
@@ -27,7 +29,7 @@ describe('Create bond use case', () => {
     await usersRepository.create(makeUser({}, 'user-01'))
     await institutionsRepository.create(makeInstitution({}, 'institution-01'))
 
-    await sut.execute({
+    const result = await sut.execute({
       institutionId: 'institution-01',
       userId: 'user-01',
       course: 'math',
@@ -36,34 +38,37 @@ describe('Create bond use case', () => {
       weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY'],
     })
 
+    expect(result.isSuccess()).toBe(true)
     expect(bondsRepository.bonds).toHaveLength(1)
   })
 
   it('should not be able to create a bond from a non-existent student', async () => {
-    await expect(() =>
-      sut.execute({
-        institutionId: 'institution-01',
-        userId: 'user-01',
-        course: 'math',
-        turn: 'MORNING',
-        period: '1',
-        weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY'],
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      institutionId: 'institution-01',
+      userId: 'user-01',
+      course: 'math',
+      turn: 'MORNING',
+      period: '1',
+      weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY'],
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredUserError)
   })
 
   it('should not be able to create a bond with an unregistered institution', async () => {
     await usersRepository.create(makeUser({}, 'user-01'))
 
-    await expect(() =>
-      sut.execute({
-        institutionId: 'institution-01',
-        userId: 'user-01',
-        course: 'math',
-        turn: 'MORNING',
-        period: '1',
-        weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY'],
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      institutionId: 'institution-01',
+      userId: 'user-01',
+      course: 'math',
+      turn: 'MORNING',
+      period: '1',
+      weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY'],
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UnregisteredInstitutionError)
   })
 })

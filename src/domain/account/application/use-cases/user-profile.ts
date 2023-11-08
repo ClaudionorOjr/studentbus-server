@@ -1,13 +1,13 @@
 import { User } from '@core/entities/user'
 import { UsersRepository } from '../repositories/users-repository'
+import { Either, failure, success } from '@core/either'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 interface UserProfileUseCaseRequest {
   userId: string
 }
 
-interface UserProfileUseCaseResponse {
-  user: User
-}
+type UserProfileUseCaseResponse = Either<UnregisteredUserError, { user: User }>
 
 export class UserProfileUseCase {
   constructor(private usersRepository: UsersRepository) {}
@@ -18,9 +18,9 @@ export class UserProfileUseCase {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
-      throw new Error('User does not exists.')
+      return failure(new UnregisteredUserError())
     }
 
-    return { user }
+    return success({ user })
   }
 }

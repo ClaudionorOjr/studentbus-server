@@ -1,6 +1,8 @@
 import { User } from '@core/entities/user'
 import { UsersRepository } from '../repositories/users-repository'
 import { HashGenerator } from '@account/cryptography/hash-generator'
+import { Either, failure, success } from '@core/either'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 interface RegisterAdminUseCaseRequest {
   completeName: string
@@ -8,6 +10,8 @@ interface RegisterAdminUseCaseRequest {
   password: string
   phone: string
 }
+
+type RegisterAdminUseCaseResponse = Either<UserAlreadyExistsError, object>
 
 export class RegisterAdminUseCase {
   constructor(
@@ -20,11 +24,11 @@ export class RegisterAdminUseCase {
     email,
     password,
     phone,
-  }: RegisterAdminUseCaseRequest): Promise<void> {
+  }: RegisterAdminUseCaseRequest): Promise<RegisterAdminUseCaseResponse> {
     const userAlredyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlredyExists) {
-      throw new Error('User already exists!')
+      return failure(new UserAlreadyExistsError())
     }
 
     const passwordHash = await this.hashGenerator.hash(password)
@@ -38,5 +42,7 @@ export class RegisterAdminUseCase {
     })
 
     await this.usersRepository.create(admin)
+
+    return success({})
   }
 }

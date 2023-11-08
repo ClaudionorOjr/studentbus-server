@@ -5,6 +5,7 @@ import { faker } from '@faker-js/faker'
 import { InMemorySolicitationsRepository } from 'test/repositories/in-memory-solicitations-repository'
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let usersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
@@ -24,7 +25,7 @@ describe('Signup student use case', () => {
   })
 
   it('should be able to signup a student', async () => {
-    await sut.execute({
+    const result = await sut.execute({
       completeName: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.string.alphanumeric(6),
@@ -35,7 +36,7 @@ describe('Signup student use case', () => {
       degreeOfKinship: faker.lorem.word(),
     })
 
-    expect(solicitationsRepository.solicitations).toHaveLength(1)
+    expect(result.isSuccess()).toBe(true)
     expect(solicitationsRepository.solicitations).toEqual([
       expect.objectContaining({ id: expect.any(String) }),
     ])
@@ -69,17 +70,18 @@ describe('Signup student use case', () => {
 
     await usersRepository.create(makeUser({ email }))
 
-    await expect(() => {
-      return sut.execute({
-        completeName: faker.person.fullName(),
-        email,
-        password: faker.string.alphanumeric(6),
-        phone: faker.phone.number(),
-        dateOfBirth: new Date('2000-11-05'),
-        responsibleName: faker.person.fullName(),
-        responsiblePhone: faker.phone.number(),
-        degreeOfKinship: faker.lorem.word(),
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      completeName: faker.person.fullName(),
+      email,
+      password: faker.string.alphanumeric(6),
+      phone: faker.phone.number(),
+      dateOfBirth: new Date('2000-11-05'),
+      responsibleName: faker.person.fullName(),
+      responsiblePhone: faker.phone.number(),
+      degreeOfKinship: faker.lorem.word(),
+    })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 })

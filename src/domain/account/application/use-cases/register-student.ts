@@ -5,10 +5,14 @@ import { Student } from '@account/enterprise/entities/student'
 import { StudentsRepository } from '../repositories/students-repository'
 import { Responsible } from '@account/enterprise/entities/responsible'
 import { ResponsiblesRepository } from '../repositories/responsibles-repository'
+import { Either, failure, success } from '@core/either'
+import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 interface RegisterStudentUseCaseRequest {
   solicitationId: string
 }
+
+type RegisterStudentUseCaseResponse = Either<ResourceNotFoundError, object>
 
 export class RegisterStudentUseCase {
   constructor(
@@ -18,12 +22,14 @@ export class RegisterStudentUseCase {
     private responsiblesRepository: ResponsiblesRepository,
   ) {}
 
-  async execute({ solicitationId }: RegisterStudentUseCaseRequest) {
+  async execute({
+    solicitationId,
+  }: RegisterStudentUseCaseRequest): Promise<RegisterStudentUseCaseResponse> {
     const solicitation =
       await this.solicitationsRepository.findById(solicitationId)
 
     if (!solicitation) {
-      throw new Error('Not found.')
+      return failure(new ResourceNotFoundError())
     }
 
     const user = User.create(
@@ -58,5 +64,7 @@ export class RegisterStudentUseCase {
     }
 
     await this.solicitationsRepository.delete(solicitation.id)
+
+    return success({})
   }
 }

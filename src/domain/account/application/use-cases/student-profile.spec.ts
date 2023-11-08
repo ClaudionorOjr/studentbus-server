@@ -8,6 +8,7 @@ import {
   makeUser,
 } from 'test/factories/make-user'
 import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
+import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 let usersRepository: InMemoryUsersRepository
 let responsiblesRepository: InMemoryResponsiblesRepository
@@ -34,14 +35,18 @@ describe('Student profile use case', () => {
       makeResponsible({ userId: 'student-01' }),
     )
 
-    const { studentProfile } = await sut.execute({ userId: 'user-01' })
+    const result = await sut.execute({ userId: 'user-01' })
 
-    expect(studentProfile).contains({ userId: 'user-01' })
+    expect(result.isSuccess()).toBe(true)
+    expect(result.value).toEqual({
+      studentProfile: expect.objectContaining({ userId: 'user-01' }),
+    })
   })
 
   it('should not be able to show a profile with wrong id', async () => {
-    await expect(() => sut.execute({ userId: 'user' })).rejects.toBeInstanceOf(
-      Error,
-    )
+    const result = await sut.execute({ userId: 'user' })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 })

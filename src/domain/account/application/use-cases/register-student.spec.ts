@@ -5,6 +5,7 @@ import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeSolicitation } from 'test/factories/make-solicitation'
 import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
+import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 let solicitationsRepository: InMemorySolicitationsRepository
 let usersRepository: InMemoryUsersRepository
@@ -36,8 +37,9 @@ describe('Register student use case', () => {
 
     expect(solicitationsRepository.solicitations).toHaveLength(1)
 
-    await sut.execute({ solicitationId: 'solicitation-01' })
+    const result = await sut.execute({ solicitationId: 'solicitation-01' })
 
+    expect(result.isSuccess()).toBe(true)
     expect(solicitationsRepository.solicitations).toHaveLength(0)
     expect(usersRepository.users).toHaveLength(1)
     expect(studentsRepository.students).toHaveLength(1)
@@ -50,8 +52,9 @@ describe('Register student use case', () => {
   })
 
   it('should not be able to register a non-existent solicitation', async () => {
-    await expect(() =>
-      sut.execute({ solicitationId: 'solicitation-01' }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({ solicitationId: 'solicitation-01' })
+
+    expect(result.isFailure()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 })

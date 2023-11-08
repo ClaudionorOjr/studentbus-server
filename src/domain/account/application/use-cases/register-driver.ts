@@ -1,6 +1,8 @@
 import { User } from '@core/entities/user'
 import { UsersRepository } from '../repositories/users-repository'
 import { HashGenerator } from '@account/cryptography/hash-generator'
+import { Either, failure, success } from '@core/either'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 interface RegisterDriverUseCaseRequest {
   completeName: string
@@ -8,6 +10,8 @@ interface RegisterDriverUseCaseRequest {
   password: string
   phone: string
 }
+
+type RegisterDriverUseCaseResponse = Either<UserAlreadyExistsError, object>
 
 export class RegisterDriverUseCase {
   constructor(
@@ -20,11 +24,11 @@ export class RegisterDriverUseCase {
     email,
     password,
     phone,
-  }: RegisterDriverUseCaseRequest): Promise<void> {
+  }: RegisterDriverUseCaseRequest): Promise<RegisterDriverUseCaseResponse> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
-      throw new Error('User already exists!')
+      return failure(new UserAlreadyExistsError())
     }
 
     const passwordHash = await this.hashGenerator.hash(password)
@@ -38,5 +42,7 @@ export class RegisterDriverUseCase {
     })
 
     await this.usersRepository.create(driver)
+
+    return success({})
   }
 }
