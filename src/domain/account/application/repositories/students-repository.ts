@@ -6,4 +6,5 @@ export interface StudentsRepository {
   findByUserId(userId: string): Promise<Student | null>
   getProfile(userId: string): Promise<StudentProfile | null>
   save(student: Student): Promise<void>
+  delete(id: string): Promise<void>
 }
