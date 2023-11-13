@@ -203,3 +203,13 @@ Adicionar os scripts de testes ao `package.json`:
 </details>
 
 ---
+
+<details>
+  <summary><a>Zod</a></summary>
+  
+  ```sh
+  $ npm i zod
+  ```
+</details>
+
+---

@@ -1,2 +1,8 @@
-node_modules
+# compiled output
+/node_modules
+
+# ENV
 .env
+
+# docker
+/data

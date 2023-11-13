@@ -76,9 +76,9 @@ describe('Fetch students on list use case', () => {
       ]),
     })
 
-    if (result.isSuccess()) {
-      console.log(result.value.studentsOnList)
-    }
+    // if (result.isSuccess()) {
+    //   console.log(result.value.studentsOnList)
+    // }
   })
 
   it('should not be able a non-existent user to fetch for students on list', async () => {
