@@ -44,7 +44,7 @@ export class InMemoryStudentsRepository implements StudentsRepository {
       email: user.email,
       phone: user.phone,
       studentId: student.id,
-      dateOfBirth: student.dateOfBirth,
+      birthdate: student.birthdate,
       responsibleName: responsible?.responsibleName,
       responsiblePhone: responsible?.responsiblePhone,
       degreeOfKinship: responsible?.degreeOfKinship,

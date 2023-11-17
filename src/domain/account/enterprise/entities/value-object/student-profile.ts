@@ -6,7 +6,7 @@ export interface StudentProfileProps {
   email: string
   phone: string
   studentId: string
-  dateOfBirth: Date
+  birthdate: Date
   responsibleName?: string
   responsiblePhone?: string
   degreeOfKinship?: string
@@ -34,8 +34,8 @@ export class StudentProfile extends ValueObject<StudentProfileProps> {
     return this.props.studentId
   }
 
-  get dateOfBirth() {
-    return this.props.dateOfBirth
+  get birthdate() {
+    return this.props.birthdate
   }
 
   get responsibleName() {

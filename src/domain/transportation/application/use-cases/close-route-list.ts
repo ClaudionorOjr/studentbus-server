@@ -32,7 +32,7 @@ export class CloseRouteList {
       return failure(new UnregisteredUserError())
     }
 
-    if (user.rule !== 'DRIVER') {
+    if (user.role !== 'DRIVER') {
       // throw new Error('Not allowed.')
       return failure(new NotAllowedError())
     }

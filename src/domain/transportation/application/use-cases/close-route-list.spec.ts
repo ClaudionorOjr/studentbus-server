@@ -25,7 +25,7 @@ describe('Close route list use case', () => {
   })
 
   it('should be able a driver user to close a route list', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
     await routeListsRepository.create(
       makeRouteList({ userId: 'user-01' }, 'route-list-01'),
     )
@@ -42,7 +42,7 @@ describe('Close route list use case', () => {
   })
 
   it('should not be able a non-driver user to close a route list', async () => {
-    await usersRepository.create(makeUser({ rule: 'STUDENT' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'STUDENT' }, 'user-01'))
     await routeListsRepository.create(makeRouteList({}, 'route-list-01'))
 
     const result = await sut.execute({
@@ -55,7 +55,7 @@ describe('Close route list use case', () => {
   })
 
   it('should not be able to close a non-existent route list', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
 
     const result = await sut.execute({
       userId: 'user-01',
@@ -67,7 +67,7 @@ describe('Close route list use case', () => {
   })
 
   it('should not be able to close a route list created by another driver', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
     await routeListsRepository.create(
       makeRouteList({ userId: 'user-02' }, 'route-list-01'),
     )

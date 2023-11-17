@@ -11,7 +11,7 @@ export function makeUser(override: Partial<User> = {}, id?: string) {
       email: faker.internet.email(),
       passwordHash: faker.internet.password(),
       phone: faker.phone.number(),
-      rule: 'STUDENT',
+      role: 'STUDENT',
       ...override,
     },
     id,
@@ -24,7 +24,7 @@ export function makeStudent(override: Partial<Student> = {}, id?: string) {
   const student = Student.create(
     {
       userId: randomUUID(),
-      dateOfBirth: faker.date.recent(),
+      birthdate: faker.date.recent(),
       ...override,
     },
     id,

@@ -33,7 +33,7 @@ describe('Create route list use case', () => {
   })
 
   it('should be able to create a route list', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
     await institutiosRepository.create(
       makeInstitution({ name: 'UERN' }, 'institution-01'),
     )
@@ -79,7 +79,7 @@ describe('Create route list use case', () => {
   })
 
   it('should not be able a non-driver user to create a route list', async () => {
-    await usersRepository.create(makeUser({ rule: 'STUDENT' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'STUDENT' }, 'user-01'))
 
     await institutiosRepository.create(
       makeInstitution({ name: 'UERN' }, 'institution-01'),
@@ -105,7 +105,7 @@ describe('Create route list use case', () => {
   })
 
   it('should not be able to create a route list with an unregistered institution', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
     await institutiosRepository.create(
       makeInstitution({ name: 'UERN' }, 'institution-01'),
     )

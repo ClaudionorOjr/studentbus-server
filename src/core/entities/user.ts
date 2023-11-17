@@ -6,9 +6,9 @@ export interface UserProps {
   email: string
   passwordHash: string
   phone: string
-  rule: 'STUDENT' | 'DRIVER' | 'ADMIN'
+  role: 'STUDENT' | 'DRIVER' | 'ADMIN'
   createdAt: Date
-  updatedAt?: Date
+  updatedAt?: Date | null
   // avatar
 }
 
@@ -50,8 +50,8 @@ export class User extends Entity<UserProps> {
     this.touch()
   }
 
-  get rule() {
-    return this.props.rule
+  get role() {
+    return this.props.role
   }
 
   get createdAt() {

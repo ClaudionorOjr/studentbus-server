@@ -24,7 +24,7 @@ export class DeleteUserUseCase {
       return failure(new UnregisteredUserError())
     }
 
-    if (user.rule === 'STUDENT') {
+    if (user.role === 'STUDENT') {
       await this.studentsRepository.delete(user.id)
     }
 

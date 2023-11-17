@@ -44,7 +44,7 @@ export class CreateBondUseCase {
       return failure(new UnregisteredUserError())
     }
 
-    if (user.rule !== 'STUDENT') {
+    if (user.role !== 'STUDENT') {
       // throw new Error('Non-student users cannot have bonds.')
       return failure(new NotAllowedError())
     }

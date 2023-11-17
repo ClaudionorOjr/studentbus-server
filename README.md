@@ -142,6 +142,18 @@ Arquivo de configuração do semantic-release, ``.releaserc.json`:
 ---
 
 <details>
+  <summary><a>Supertest</a></summary>
+
+```sh
+# Realiza as chamadas HTTP dos testes para a aplicação sem a necessidade de colocar a aplicação no ar
+$ npm i supertest -D
+```
+
+</details>
+
+---
+
+<details>
   <summary><a>TypeScript</a></summary>
 
 ```sh

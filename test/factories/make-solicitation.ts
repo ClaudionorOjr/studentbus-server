@@ -12,7 +12,7 @@ export async function makeSolicitation(
       email: faker.internet.email(),
       passwordHash: await hash(faker.string.alphanumeric(6), 8),
       phone: faker.phone.number(),
-      dateOfBirth: faker.date.recent(),
+      birthdate: faker.date.recent(),
       responsibleName: faker.person.fullName(),
       responsiblePhone: faker.phone.number(),
       degreeOfKinship: faker.lorem.word(),

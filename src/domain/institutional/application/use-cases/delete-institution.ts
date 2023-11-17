@@ -34,7 +34,7 @@ export class DeleteInstitutionUseCase {
       return failure(new UnregisteredUserError())
     }
 
-    if (user.rule !== 'ADMIN') {
+    if (user.role !== 'ADMIN') {
       // throw new Error('Not allowed.')
       return failure(new NotAllowedError())
     }

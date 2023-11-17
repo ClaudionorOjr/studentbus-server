@@ -26,7 +26,7 @@ describe('Register admin use case', () => {
     })
 
     expect(result.isSuccess()).toBe(true)
-    expect(usersRepository.users[0].rule).toEqual('ADMIN')
+    expect(usersRepository.users[0].role).toEqual('ADMIN')
   })
 
   it('should hash driver password upon register', async () => {

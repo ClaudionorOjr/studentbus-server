@@ -38,7 +38,7 @@ export class RegisterDriverUseCase {
       email,
       passwordHash,
       phone,
-      rule: 'DRIVER',
+      role: 'DRIVER',
     })
 
     await this.usersRepository.create(driver)

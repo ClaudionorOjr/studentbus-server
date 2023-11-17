@@ -19,7 +19,7 @@ describe('Delete institution use case', () => {
   })
 
   it('should be able to delete an institution', async () => {
-    await usersRepository.create(makeUser({ rule: 'ADMIN' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'ADMIN' }, 'user-01'))
     await institutionsRepository.create(makeInstitution({}, 'institution-01'))
 
     expect(institutionsRepository.institutions).toHaveLength(1)
@@ -34,7 +34,7 @@ describe('Delete institution use case', () => {
   })
 
   it('should not be able to delete a non-existent institution ', async () => {
-    await usersRepository.create(makeUser({ rule: 'ADMIN' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'ADMIN' }, 'user-01'))
 
     const result = await sut.execute({
       userId: 'user-01',
@@ -46,7 +46,7 @@ describe('Delete institution use case', () => {
   })
 
   it('should not be able a not admin user to delete an institution', async () => {
-    await usersRepository.create(makeUser({ rule: 'STUDENT' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'STUDENT' }, 'user-01'))
     await institutionsRepository.create(makeInstitution({}, 'institution-01'))
 
     expect(institutionsRepository.institutions).toHaveLength(1)

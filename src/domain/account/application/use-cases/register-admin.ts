@@ -38,7 +38,7 @@ export class RegisterAdminUseCase {
       email,
       passwordHash,
       phone,
-      rule: 'ADMIN',
+      role: 'ADMIN',
     })
 
     await this.usersRepository.create(admin)

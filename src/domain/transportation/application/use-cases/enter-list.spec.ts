@@ -45,7 +45,7 @@ describe('Enter list use case', () => {
   })
 
   it('should not be able for non-student user to enter list', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
 
     const result = await sut.execute({
       userId: 'user-01',

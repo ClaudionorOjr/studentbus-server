@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 
 export interface StudentProps {
   userId: string
-  dateOfBirth: Date
+  birthdate: Date
   validatedAt: Date
 }
 
@@ -14,12 +14,12 @@ export class Student extends Entity<StudentProps> {
     return this.props.userId
   }
 
-  get dateOfBirth() {
-    return this.props.dateOfBirth
+  get birthdate() {
+    return this.props.birthdate
   }
 
-  set dateOfBirth(dateOfBirth: Date) {
-    this.props.dateOfBirth = dateOfBirth
+  set birthdate(birthdate: Date) {
+    this.props.birthdate = birthdate
   }
 
   get validatedAt() {
@@ -28,7 +28,7 @@ export class Student extends Entity<StudentProps> {
 
   /* METHODS */
   age() {
-    return dayjs().diff(this.dateOfBirth, 'year')
+    return dayjs().diff(this.birthdate, 'year')
   }
 
   // ! Rever a funcionalidade de validação do cadastro
@@ -47,12 +47,12 @@ export class Student extends Entity<StudentProps> {
 
   //! Provavelmente retirar esse código abaixo
   // static solicication(
-  //   props: Optional<Solicitation, 'createdAt' | 'rule'>,
+  //   props: Optional<Solicitation, 'createdAt' | 'role'>,
   //   id: string = randomUUID(),
   // ) {
   //   const solicication: Solicitation = {
   //     ...props,
-  //     rule: 'STUDENT',
+  //     role: 'STUDENT',
   //     createdAt: new Date(),
   //   }
   //   id

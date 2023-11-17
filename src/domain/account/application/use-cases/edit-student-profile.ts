@@ -8,7 +8,7 @@ interface EditStudentProfileUseCaseRequest {
   userId: string
   completeName?: string
   phone?: string
-  dateOfBirth?: Date
+  birthdate?: Date
   responsibleName?: string
   responsiblePhone?: string
   degreeOfKinship?: string
@@ -27,7 +27,7 @@ export class EditStudentProfileUseCase {
     userId,
     completeName,
     phone,
-    dateOfBirth,
+    birthdate,
     responsibleName,
     responsiblePhone,
     degreeOfKinship,
@@ -47,7 +47,7 @@ export class EditStudentProfileUseCase {
     user.completeName = completeName ?? user.completeName
     user.phone = phone ?? user.phone
 
-    student.dateOfBirth = dateOfBirth ?? student.dateOfBirth
+    student.birthdate = birthdate ?? student.birthdate
 
     await this.usersRepository.save(user)
     await this.studentsRepository.save(student)

@@ -10,7 +10,7 @@ interface SignUpStudentUseCaseRequest {
   email: string
   password: string
   phone: string
-  dateOfBirth: Date
+  birthdate: Date
   responsibleName?: string
   responsiblePhone?: string
   degreeOfKinship?: string
@@ -30,7 +30,7 @@ export class SignUpStudentUseCase {
     email,
     password,
     phone,
-    dateOfBirth,
+    birthdate,
     responsibleName,
     responsiblePhone,
     degreeOfKinship,
@@ -48,7 +48,7 @@ export class SignUpStudentUseCase {
       email,
       passwordHash,
       phone,
-      dateOfBirth,
+      birthdate,
       responsibleName,
       responsiblePhone,
       degreeOfKinship,

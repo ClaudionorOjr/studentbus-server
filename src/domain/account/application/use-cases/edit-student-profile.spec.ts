@@ -36,7 +36,7 @@ describe('Edit student profile use case', () => {
     const result = await sut.execute({
       userId: user.id,
       completeName: 'John doe',
-      dateOfBirth: new Date('2002-03-12'),
+      birthdate: new Date('2002-03-12'),
     })
 
     expect(result.isSuccess()).toBe(true)
@@ -44,7 +44,7 @@ describe('Edit student profile use case', () => {
       completeName: 'John doe',
     })
     expect(studentsRepository.students[0]).toMatchObject({
-      dateOfBirth: new Date('2002-03-12'),
+      birthdate: new Date('2002-03-12'),
     })
   })
 
@@ -52,7 +52,7 @@ describe('Edit student profile use case', () => {
     const result = await sut.execute({
       userId: 'user-01',
       completeName: 'John doe',
-      dateOfBirth: new Date('2002-03-12'),
+      birthdate: new Date('2002-03-12'),
     })
 
     expect(result.isFailure()).toBe(true)
@@ -65,7 +65,7 @@ describe('Edit student profile use case', () => {
     const result = await sut.execute({
       userId: 'user-01',
       completeName: 'John doe',
-      dateOfBirth: new Date('2002-03-12'),
+      birthdate: new Date('2002-03-12'),
     })
 
     expect(result.isFailure()).toBe(true)

@@ -38,7 +38,7 @@ export class RegisterStudentUseCase {
         email: solicitation.email,
         passwordHash: solicitation.passwordHash,
         phone: solicitation.phone,
-        rule: 'STUDENT',
+        role: 'STUDENT',
       },
       solicitation.id,
     )
@@ -47,7 +47,7 @@ export class RegisterStudentUseCase {
 
     const student = Student.create({
       userId: user.id,
-      dateOfBirth: solicitation.dateOfBirth,
+      birthdate: solicitation.birthdate,
     })
 
     await this.studentsRepository.create(student)

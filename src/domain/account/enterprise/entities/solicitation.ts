@@ -2,12 +2,14 @@ import { Entity } from '@core/entities/entity'
 import { UserProps } from '@core/entities/user'
 import { Optional } from '@core/types/optional'
 
+// TODO Atualizar a entidade Solicitations com os campos do schema prisma
 export interface SolicitationProps
-  extends Omit<UserProps, 'rule' | 'updatedAt'> {
-  dateOfBirth: Date
-  responsibleName?: string
-  responsiblePhone?: string
-  degreeOfKinship?: string
+  extends Omit<UserProps, 'role' | 'updatedAt'> {
+  birthdate: Date
+  responsibleName?: string | null
+  responsiblePhone?: string | null
+  degreeOfKinship?: string | null
+  note?: string | null
   status: 'PENDING' | 'REFUSED'
 }
 
@@ -33,8 +35,8 @@ export class Solicitation extends Entity<SolicitationProps> {
     return this.props.createdAt
   }
 
-  get dateOfBirth() {
-    return this.props.dateOfBirth
+  get birthdate() {
+    return this.props.birthdate
   }
 
   get responsibleName() {
@@ -47,6 +49,10 @@ export class Solicitation extends Entity<SolicitationProps> {
 
   get degreeOfKinship() {
     return this.props.degreeOfKinship
+  }
+
+  get note() {
+    return this.props.note
   }
 
   get status() {

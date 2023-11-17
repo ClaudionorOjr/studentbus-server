@@ -23,7 +23,7 @@ describe('Delete account use case', () => {
   })
 
   it('should be able to delete a account', async () => {
-    await usersRepository.create(makeUser({ rule: 'DRIVER' }, 'user-01'))
+    await usersRepository.create(makeUser({ role: 'DRIVER' }, 'user-01'))
     expect(usersRepository.users).toHaveLength(1)
 
     const result = await sut.execute({ userId: 'user-01' })

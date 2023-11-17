@@ -40,7 +40,7 @@ export class EnterListUseCase {
       return failure(new UnregisteredUserError())
     }
 
-    if (user.rule !== 'STUDENT') {
+    if (user.role !== 'STUDENT') {
       // throw new Error('Not allowed')
       return failure(new NotAllowedError())
     }

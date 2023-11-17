@@ -34,7 +34,7 @@ model User {
 
 model Student {
   userId      String   @unique @map("user_id")
-  dateOfBirth DateTime @map("date_of_birth")
+  birthdate   DateTime
   validatedAt DateTime @map("validated_at")
 
   user User @relation(fields: [userId], references: [id])
@@ -52,4 +52,26 @@ model Responsible {
   user User @relation(fields: [userId], references: [id])
 
   @@map("responsibles")
+}
+
+enum Status {
+  PENDING
+  REFUSED
+}
+
+model Solicitation {
+  id               String   @id @default(uuid())
+  completeName     String   @map("complete_name")
+  email            String
+  password         String
+  phone            String
+  birthdate        DateTime
+  responsibleName  String?  @map("responsible_name")
+  responsiblePhone String?  @map("responsible_phone")
+  degreeOfKinship  String?  @map("degree_of_kinship")
+  note             String?
+  status           Status   @default(PENDING)
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@map("solicitations")
 }

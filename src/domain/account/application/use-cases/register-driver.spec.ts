@@ -26,7 +26,7 @@ describe('Register driver use case', () => {
     })
 
     expect(result.isSuccess()).toBe(true)
-    expect(usersRepository.users[0].rule).toEqual('DRIVER')
+    expect(usersRepository.users[0].role).toEqual('DRIVER')
   })
 
   it('should hash driver password upon register', async () => {
