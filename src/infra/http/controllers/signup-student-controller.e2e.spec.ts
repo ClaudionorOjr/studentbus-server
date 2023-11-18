@@ -1,5 +1,5 @@
+import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
 import { app } from 'src/app'
-import { prisma } from 'src/infra/database/prisma/prisma'
 import request from 'supertest'
 
 describe('Sign up student (e2e)', () => {
@@ -22,11 +22,12 @@ describe('Sign up student (e2e)', () => {
 
     expect(response.statusCode).toEqual(201)
 
-    const solicicationOnDatabase = await prisma.solicitation.findFirst({
-      where: {
-        email: 'johndoe@example.com',
-      },
-    })
+    const solicicationOnDatabase =
+      await databaseE2ETests.solicitation.findFirst({
+        where: {
+          email: 'johndoe@example.com',
+        },
+      })
 
     console.log(solicicationOnDatabase)
 
