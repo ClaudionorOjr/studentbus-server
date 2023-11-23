@@ -45,7 +45,7 @@ describe('Register student use case', () => {
     expect(studentsRepository.students).toHaveLength(1)
     expect(responsiblesRepository.responsibles).toHaveLength(1)
 
-    expect(studentsRepository.students[0].userId).toEqual(
+    expect(studentsRepository.students[0].id).toEqual(
       usersRepository.users[0].id,
     )
     expect(studentsRepository.students[0].validatedAt).toEqual(expect.any(Date))

@@ -49,8 +49,6 @@ export async function signUpStudent(
       responsiblePhone,
     })
 
-    console.log(birthdate)
-
     return reply.status(201).send()
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {

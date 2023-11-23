@@ -45,10 +45,12 @@ export class RegisterStudentUseCase {
 
     await this.usersRepository.create(user)
 
-    const student = Student.create({
-      userId: user.id,
-      birthdate: solicitation.birthdate,
-    })
+    const student = Student.create(
+      {
+        birthdate: solicitation.birthdate,
+      },
+      user.id,
+    )
 
     await this.studentsRepository.create(student)
 

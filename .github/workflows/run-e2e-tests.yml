@@ -5,6 +5,8 @@ on:
     workflows: [Run unit tests]
     types:
       - completed
+    branches:
+      - alpha
 
 jobs:
   e2e-tests:

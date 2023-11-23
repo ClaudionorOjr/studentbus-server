@@ -29,8 +29,6 @@ describe('Sign up student (e2e)', () => {
         },
       })
 
-    console.log(solicicationOnDatabase)
-
     expect(solicicationOnDatabase).toBeTruthy()
   })
 })

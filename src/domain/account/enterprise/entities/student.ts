@@ -3,17 +3,12 @@ import { Optional } from '@core/types/optional'
 import dayjs from 'dayjs'
 
 export interface StudentProps {
-  userId: string
   birthdate: Date
   validatedAt: Date
 }
 
 export class Student extends Entity<StudentProps> {
   /* GETTERS AND SETTERS */
-  get userId() {
-    return this.props.userId
-  }
-
   get birthdate() {
     return this.props.birthdate
   }
