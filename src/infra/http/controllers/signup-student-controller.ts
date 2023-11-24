@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { makeSignupStudentUseCase } from 'src/infra/database/prisma/factories/make-signup-student-use-case'
+import { makeSignupStudentUseCase } from '@infra/database/prisma/factories/make-signup-student-use-case'
 import { UserAlreadyExistsError } from '@account/application/use-cases/errors/user-already-exists-error'
 import { z } from 'zod'
 import dayjs from 'dayjs'

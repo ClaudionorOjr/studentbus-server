@@ -4,7 +4,7 @@ import {
 } from '@account/enterprise/entities/solicitation'
 import { faker } from '@faker-js/faker'
 import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
-import { PrismaSolicitationMapper } from 'src/infra/database/prisma/mappers/prisma-solicitatiton-mapper'
+import { PrismaSolicitationMapper } from '@infra/database/prisma/mappers/prisma-solicitatiton-mapper'
 
 /**
  * Creates a solicitation with optional overrides and an optional ID.

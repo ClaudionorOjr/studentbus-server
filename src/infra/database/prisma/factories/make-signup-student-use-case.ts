@@ -1,6 +1,6 @@
 import { SignUpStudentUseCase } from '@account/application/use-cases/signup-student'
 import { PrismaSolicitatitonsRepository } from '../repositories/prisma-solicitations-repository'
-import { BcryptHasher } from 'src/infra/cryptography/bcrypt-hasher'
+import { BcryptHasher } from '@infra/cryptography/bcrypt-hasher'
 import { PrismaUsersRepository } from '../repositories/prisma-users-repository'
 
 export function makeSignupStudentUseCase() {

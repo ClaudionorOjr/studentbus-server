@@ -1,6 +1,6 @@
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { makeRegisterStudentUseCase } from 'src/infra/database/prisma/factories/make-register-student-use-case'
+import { makeRegisterStudentUseCase } from '@infra/database/prisma/factories/make-register-student-use-case'
 import { z } from 'zod'
 
 export async function registerStudent(
