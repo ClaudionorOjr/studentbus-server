@@ -11,7 +11,7 @@ export async function fetchPendingSolicitations(
   const result = await fetchPendingSolicitationsUseCase.execute()
 
   if (result.isFailure()) {
-    return reply.status(400).send()
+    return reply.status(400).send({ message: 'Bad request.' })
   }
   const { solicitations } = result.value
 

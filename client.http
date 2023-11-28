@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:3333
+
+# @name create_driver
+POST {{baseUrl}}/drivers/register
+Content-Type: application/json
+
+{
+  "completeName": "John Doe",
+  "email": "johndoe@example.com",
+  "password": "123456",
+  "phone": "(00) 98765-4321",
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "123456",
+}

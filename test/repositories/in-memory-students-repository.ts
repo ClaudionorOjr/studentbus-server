@@ -17,7 +17,7 @@ export class InMemoryStudentsRepository implements StudentsRepository {
   }
 
   async findByUserId(userId: string): Promise<Student | null> {
-    const student = this.students.find((student) => student.userId === userId)
+    const student = this.students.find((student) => student.id === userId)
 
     if (!student) {
       return null
@@ -28,7 +28,7 @@ export class InMemoryStudentsRepository implements StudentsRepository {
 
   async getProfile(userId: string): Promise<StudentProfile | null> {
     const user = this.usersRepository.users.find((user) => user.id === userId)
-    const student = this.students.find((student) => student.userId === userId)
+    const student = this.students.find((student) => student.id === userId)
 
     if (!user || !student) {
       return null
@@ -58,9 +58,7 @@ export class InMemoryStudentsRepository implements StudentsRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const userIndex = this.students.findIndex(
-      (student) => student.userId === id,
-    )
+    const userIndex = this.students.findIndex((student) => student.id === id)
 
     this.students.splice(userIndex, 1)
   }

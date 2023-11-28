@@ -38,7 +38,7 @@ export async function signUpStudent(
   try {
     const signUpStudentUseCase = makeSignupStudentUseCase()
 
-    await signUpStudentUseCase.execute({
+    const result = await signUpStudentUseCase.execute({
       completeName,
       email,
       password,
@@ -48,6 +48,10 @@ export async function signUpStudent(
       responsibleName,
       responsiblePhone,
     })
+
+    if (result.isFailure()) {
+      throw result.value
+    }
 
     return reply.status(201).send()
   } catch (error) {

@@ -20,17 +20,23 @@ export async function registerAdmin(
   try {
     const registerAdminUseCase = makeRegisterAdminUseCase()
 
-    await registerAdminUseCase.execute({
+    const result = await registerAdminUseCase.execute({
       completeName,
       email,
       password,
       phone,
     })
 
+    if (result.isFailure()) {
+      throw result.value
+    }
+
     return reply.status(201).send()
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message })
     }
+
+    throw error
   }
 }

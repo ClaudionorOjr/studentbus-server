@@ -20,12 +20,16 @@ export async function registerDriver(
   try {
     const registerDriverUseCase = makeRegisterDriverUseCase()
 
-    await registerDriverUseCase.execute({
+    const result = await registerDriverUseCase.execute({
       completeName,
       email,
       password,
       phone,
     })
+
+    if (result.isFailure()) {
+      throw result.value
+    }
 
     return reply.status(201).send()
   } catch (error) {

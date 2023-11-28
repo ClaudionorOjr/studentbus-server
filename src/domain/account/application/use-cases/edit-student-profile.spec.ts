@@ -28,7 +28,7 @@ describe('Edit student profile use case', () => {
 
   it('should be able a student to edit your profile data', async () => {
     const user = makeUser({}, 'user-01')
-    const student = makeStudent({ userId: user.id })
+    const student = makeStudent({}, user.id)
 
     await usersRepository.create(user)
     await studentsRepository.create(student)

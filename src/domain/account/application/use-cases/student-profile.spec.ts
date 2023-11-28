@@ -27,13 +27,13 @@ describe('Student profile use case', () => {
   })
 
   it('should be able to show the student profile', async () => {
-    await usersRepository.create(makeUser({}, 'user-01'))
-    await studentsRepository.create(
-      makeStudent({ userId: 'user-01' }, 'student-01'),
-    )
-    await responsiblesRepository.create(
-      makeResponsible({ userId: 'student-01' }),
-    )
+    const user = makeUser({}, 'user-01')
+    const student = makeStudent({}, user.id)
+
+    await usersRepository.create(user)
+    await studentsRepository.create(student)
+
+    await responsiblesRepository.create(makeResponsible({ userId: user.id }))
 
     const result = await sut.execute({ userId: 'user-01' })
 

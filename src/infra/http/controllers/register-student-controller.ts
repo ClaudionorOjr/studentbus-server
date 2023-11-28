@@ -16,7 +16,11 @@ export async function registerStudent(
   try {
     const registerStudentUseCase = makeRegisterStudentUseCase()
 
-    await registerStudentUseCase.execute({ solicitationId })
+    const result = await registerStudentUseCase.execute({ solicitationId })
+
+    if (result.isFailure()) {
+      throw result.value
+    }
 
     return reply.status(201).send()
   } catch (error) {

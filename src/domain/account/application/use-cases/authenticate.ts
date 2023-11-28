@@ -42,7 +42,10 @@ export class AuthenticateUseCase {
       return failure(new WrongCredentialsError())
     }
 
-    const accessToken = await this.encrypter.encrypt({ sub: user.id })
+    const accessToken = await this.encrypter.encrypt({
+      sub: user.id,
+      role: user.role,
+    })
 
     return success({ accessToken })
   }

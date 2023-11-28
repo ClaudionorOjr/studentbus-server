@@ -48,7 +48,7 @@ export class InMemoryStudentListsRepository implements StudentListsRepository {
         (user) => user.id === profile.userId,
       )
       const student = this.studentsRepository.students.find(
-        (student) => student.userId === profile.userId,
+        (student) => student.id === profile.userId,
       )
       const responsible = this.responsiblesRepository.responsibles.find(
         (responsible) => responsible.userId === profile.userId,

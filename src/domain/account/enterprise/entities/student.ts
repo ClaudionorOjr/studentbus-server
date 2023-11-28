@@ -55,7 +55,7 @@ export class Student extends Entity<StudentProps> {
   //   return solicication
   // }
 
-  static create(props: Optional<StudentProps, 'validatedAt'>, id?: string) {
+  static create(props: Optional<StudentProps, 'validatedAt'>, id: string) {
     const student = new Student(
       { ...props, validatedAt: props.validatedAt ?? new Date() },
       id,

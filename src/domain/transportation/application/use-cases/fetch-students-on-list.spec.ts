@@ -47,9 +47,10 @@ describe('Fetch students on list use case', () => {
   it('should be able to fetch students on list', async () => {
     await Promise.all([
       usersRepository.create(makeUser({}, 'user-01')),
-      studentsRepository.create(makeStudent({ userId: 'user-01' })),
+      studentsRepository.create(makeStudent({}, 'user-01')),
+
       usersRepository.create(makeUser({}, 'user-02')),
-      studentsRepository.create(makeStudent({ userId: 'user-02' })),
+      studentsRepository.create(makeStudent({}, 'user-02')),
     ])
 
     await routeListsRepository.create(makeRouteList({}, 'route-list-01'))

@@ -1,10 +1,14 @@
-import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
-import { app } from 'src/app'
+import { FastifyInstance } from 'fastify'
 import request from 'supertest'
+import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
 import { makePrismaSolicitation } from 'test/factories/make-solicitation'
 
 describe('Fetch pending solicitations (e2e)', () => {
+  let app: FastifyInstance
+
   beforeAll(async () => {
+    app = (await import('src/app')).app
+
     await app.ready()
   })
 

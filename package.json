@@ -12,6 +12,7 @@
     "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix"
   },
@@ -40,6 +41,8 @@
     "vitest": "0.34.6"
   },
   "dependencies": {
+    "@fastify/cookie": "9.2.0",
+    "@fastify/jwt": "7.2.4",
     "@prisma/client": "5.6.0",
     "bcryptjs": "2.4.3",
     "dayjs": "1.11.10",
