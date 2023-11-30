@@ -3,8 +3,8 @@ import {
   SolicitationProps,
 } from '@account/enterprise/entities/solicitation'
 import { faker } from '@faker-js/faker'
-import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
 import { PrismaSolicitationMapper } from '@infra/database/prisma/mappers/prisma-solicitatiton-mapper'
+import { PrismaClient } from '@prisma/client'
 
 /**
  * Creates a solicitation with optional overrides and an optional ID.
@@ -35,20 +35,21 @@ export function makeSolicitation(
   return solicitation
 }
 
-/**
- * Creates a new Prisma solicitation.
- *
- * @param {Partial<SolicitationProps>} data - Optional data to initialize the solicitation.
- * @return {Promise<Solicitation>} The created solicitation.
- */
-export async function makePrismaSolicitation(
-  data: Partial<SolicitationProps> = {},
-): Promise<Solicitation> {
-  const solicitation = makeSolicitation(data)
+export class SolicitationFactory {
+  constructor(private prisma: PrismaClient) {}
 
-  await databaseE2ETests.solicitation.create({
-    data: PrismaSolicitationMapper.toPrisma(solicitation),
-  })
+  async makePrismaSolicitation(
+    data: Partial<SolicitationProps> = {},
+  ): Promise<Solicitation> {
+    const solicitation = makeSolicitation(data)
 
-  return solicitation
+    // ! Remover console.log
+    console.log('makePrismaSolicitation: ' + process.env.DATABASE_URL)
+
+    await this.prisma.solicitation.create({
+      data: PrismaSolicitationMapper.toPrisma(solicitation),
+    })
+
+    return solicitation
+  }
 }

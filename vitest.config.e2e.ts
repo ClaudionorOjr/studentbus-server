@@ -6,7 +6,7 @@ export default defineConfig({
     include: ['**/*.e2e.spec.ts'],
     globals: true,
     root: './',
-    environmentMatchGlobs: [['src/infra/http/controllers/**', 'prisma']],
+    setupFiles: ['./test/setup-e2e.ts'],
   },
   plugins: [tsConfigPaths()],
 })

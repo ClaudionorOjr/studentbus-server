@@ -5,6 +5,8 @@ import { PrismaStudentsRepository } from '../repositories/prisma-students-reposi
 import { PrismaResponsiblesRepository } from '../repositories/prisma-responsibles-repository'
 
 export function makeRegisterStudentUseCase() {
+  // ! Remover console.log
+  console.log('make register student: ' + process.env.DATABASE_URL)
   const solicitationsRepository = new PrismaSolicitatitonsRepository()
   const usersRepository = new PrismaUsersRepository()
   const studentsRepository = new PrismaStudentsRepository()

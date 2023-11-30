@@ -10,3 +10,6 @@
 # jwt
 private_key.pem
 public_key.pem
+
+# vscode
+/.vscode

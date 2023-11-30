@@ -1,13 +1,19 @@
+import { getPrisma } from '@infra/database/prisma'
+import { PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { FastifyInstance } from 'fastify'
 import request from 'supertest'
-import { makePrismaUser } from 'test/factories/make-user'
+import { UserFactory } from 'test/factories/make-user'
 
 describe('Authenticate (e2e)', () => {
   let app: FastifyInstance
+  let prisma: PrismaClient
+  let userFactory: UserFactory
 
   beforeAll(async () => {
     app = (await import('src/app')).app
+    prisma = getPrisma()
+    userFactory = new UserFactory(prisma)
 
     await app.ready()
   })
@@ -17,7 +23,7 @@ describe('Authenticate (e2e)', () => {
   })
 
   test('[POST] /sessions', async () => {
-    await makePrismaUser({
+    await userFactory.makePrismaUser({
       email: 'johndoe@example.com',
       passwordHash: await hash('123456', 8),
     })

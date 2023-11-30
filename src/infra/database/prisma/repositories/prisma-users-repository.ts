@@ -1,9 +1,19 @@
 import { UsersRepository } from '@account/application/repositories/users-repository'
 import { User } from '@core/entities/user'
 import { PrismaUserMapper } from '../mappers/prisma-user-mapper'
-import { prisma } from '../prisma'
+import { PrismaClient } from '@prisma/client'
+import { getPrisma } from '..'
+
+let prisma: PrismaClient
 
 export class PrismaUsersRepository implements UsersRepository {
+  constructor() {
+    console.log('PrismaUserRepository: ' + process.env.DATABASE_URL)
+    if (!prisma) {
+      prisma = getPrisma()
+    }
+  }
+
   async create(user: User): Promise<void> {
     const data = PrismaUserMapper.toPrisma(user)
 

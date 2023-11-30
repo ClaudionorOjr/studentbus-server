@@ -1,9 +1,20 @@
 import { SolicitationsRepository } from '@account/application/repositories/solicitations-repository'
 import { Solicitation } from '@account/enterprise/entities/solicitation'
-import { prisma } from '../prisma'
+import { getPrisma } from '..'
 import { PrismaSolicitationMapper } from '../mappers/prisma-solicitatiton-mapper'
+import { PrismaClient } from '@prisma/client'
+
+let prisma: PrismaClient
 
 export class PrismaSolicitatitonsRepository implements SolicitationsRepository {
+  constructor() {
+    console.log('PrismaSolicitationsRepository: ' + process.env.DATABASE_URL)
+    // * Carregue o prisma apenas quando a classe for instanciada, para que assim utilize o schema randômico para os testes e2e.
+    if (!prisma) {
+      prisma = getPrisma()
+    }
+  }
+
   async create(solicitation: Solicitation): Promise<void> {
     const data = PrismaSolicitationMapper.toPrisma(solicitation)
 

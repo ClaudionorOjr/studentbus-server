@@ -1,13 +1,18 @@
 import { FastifyInstance } from 'fastify'
 import request from 'supertest'
-import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
-import { makePrismaSolicitation } from 'test/factories/make-solicitation'
+import { PrismaClient } from '@prisma/client'
+import { getPrisma } from '@infra/database/prisma'
+import { SolicitationFactory } from 'test/factories/make-solicitation'
 
 describe('Fetch pending solicitations (e2e)', () => {
   let app: FastifyInstance
+  let prisma: PrismaClient
+  let solicitationFactory: SolicitationFactory
 
   beforeAll(async () => {
     app = (await import('src/app')).app
+    prisma = getPrisma()
+    solicitationFactory = new SolicitationFactory(prisma)
 
     await app.ready()
   })
@@ -17,15 +22,14 @@ describe('Fetch pending solicitations (e2e)', () => {
   })
 
   test('[GET] /solicitations', async () => {
-    await makePrismaSolicitation()
-    await makePrismaSolicitation()
+    await solicitationFactory.makePrismaSolicitation()
+    await solicitationFactory.makePrismaSolicitation()
 
     const response = await request(app.server).get('/solicitations').send()
 
     expect(response.statusCode).toEqual(200)
 
-    const solicitationsOnDatabase =
-      await databaseE2ETests.solicitation.findMany()
+    const solicitationsOnDatabase = await prisma.solicitation.findMany()
 
     expect(solicitationsOnDatabase).toHaveLength(2)
   })

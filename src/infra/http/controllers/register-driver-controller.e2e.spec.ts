@@ -1,12 +1,15 @@
+import { getPrisma } from '@infra/database/prisma'
+import { PrismaClient } from '@prisma/client'
 import { FastifyInstance } from 'fastify'
 import request from 'supertest'
-import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
 
 describe('Register driver (e2e)', () => {
   let app: FastifyInstance
+  let prisma: PrismaClient
 
   beforeAll(async () => {
     app = (await import('src/app')).app
+    prisma = getPrisma()
 
     await app.ready()
   })
@@ -25,7 +28,7 @@ describe('Register driver (e2e)', () => {
 
     expect(response.statusCode).toEqual(201)
 
-    const driverOnDatabase = await databaseE2ETests.user.findUnique({
+    const driverOnDatabase = await prisma.user.findUnique({
       where: {
         email: 'johndoe@example.com',
       },

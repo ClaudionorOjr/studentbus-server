@@ -3,8 +3,8 @@ import { Student } from '@account/enterprise/entities/student'
 import { User, UserProps } from '@core/entities/user'
 import { faker } from '@faker-js/faker'
 import { PrismaUserMapper } from '@infra/database/prisma/mappers/prisma-user-mapper'
+import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
-import { databaseE2ETests } from 'prisma/vitest-environment-prisma/setup-e2e'
 
 /**
  * Generates a user object with optional overrides and an optional ID.
@@ -29,22 +29,19 @@ export function makeUser(override: Partial<UserProps> = {}, id?: string): User {
   return user
 }
 
-/**
- * Creates a new Prisma User with the given data.
- *
- * @param {Partial<UserProps>} data - The data to be used for creating the user. Defaults to an empty object.
- * @return {Promise<User>} - A promise that resolves with the created user.
- */
-export async function makePrismaUser(
-  data: Partial<UserProps> = {},
-): Promise<User> {
-  const user = makeUser(data)
+export class UserFactory {
+  constructor(private prisma: PrismaClient) {}
+  async makePrismaUser(data: Partial<UserProps> = {}): Promise<User> {
+    // ! Remover console.log
+    console.log('userFactory: ' + process.env.DATABASE_URL)
+    const user = makeUser(data)
 
-  await databaseE2ETests.user.create({
-    data: PrismaUserMapper.toPrisma(user),
-  })
+    await this.prisma.user.create({
+      data: PrismaUserMapper.toPrisma(user),
+    })
 
-  return user
+    return user
+  }
 }
 
 export function makeStudent(override: Partial<Student> = {}, id: string) {
