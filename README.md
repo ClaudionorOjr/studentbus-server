@@ -116,7 +116,7 @@ $ npm i semantic-release -D
 $ npm i @semantic-release/git @semantic-release/changelog -D
 ```
 
-Arquivo de configuração do semantic-release, ``.releaserc.json`:
+Arquivo de configuração do semantic-release (`.releaserc.json`):
 
 ```json
 {
@@ -187,20 +187,38 @@ $ npm i vite-tsconfig-paths -D
 $ npm i @vitest/ui -D
 ```
 
-Criar arquivo de configuração do Vitest (`vite.config.ts`):
+- Criar arquivo de configuração do Vitest (`vite.config.ts`):
 
-> Adicionando o plugin nas configurações do Vitest
+> Adicionando o plugin nas configurações do **Vitest**
 
 ```ts
 import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
+  test: {
+    globals: true,
+    root: './',
+  },
   plugins: [tsconfigPaths()],
 });
 ```
 
-Adicionar os scripts de testes ao `package.json`:
+> A configuração `globals` torna as funções do **Vitest** globais. Mas é necessário adicionar o código abaixo no `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "types": [
+      "vitest/globals"
+    ],
+    ...
+  }
+}
+```
+
+- Adicionar os scripts de testes ao `package.json`:
 
 ```json
 "scripts": {
@@ -212,55 +230,74 @@ Adicionar os scripts de testes ao `package.json`:
 },
 ```
 
-### Test Environment no Vitest
+### Banco de dados isolado para testes e2e
 
-- É necessário criar uma pasta com o nome `vitest-environment-[name]` e iniciar um projeto node dentro dela. Nesse caso à criei na pasta **prisma**.
-
-```sh
-# Criando um projeto node em `vitest-environment-prisma`
-$ npm init -y
-```
-
-- Alterações no `package.json` em **vitest-environment-prisma**:
-
-```json
-{
-  // Nome do arquivo de execução dentro de "vitest-environment-prisma"
-  "main": "setup-e2e.ts"
-}
-```
-
-> Criar o arquivo de execução. Neste caso é o arquivo `setup-e2e.ts`.
-
-- Adicionar ao **defineConfig** no arquivo `vite.config.ts`:
+- Arquivo de configuração para o ambiente isolado para os testes e2e (`setup-e2e.ts`):
 
 ```ts
-test: {
-  // O segundo elemento do array environmentMatchGlobs, deve ser exatament o nome ao final de vitest-environmemnt-[name]
-  // Nesse caso, vitest-environment-prisma
-  environmentMatchGlobs: [['src/infra/http/controllers/**', 'prisma']],
+import { config } from 'dotenv';
+import { PrismaClient } from '@prisma/client';
+import { randomUUID } from 'node:crypto';
+import { execSync } from 'node:child_process';
+
+config({ path: '.env', override: true });
+const prisma = new PrismaClient();
+
+function generateUniqueDatabaseURL(schemaId: string) {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('Please provider a DATABASE_URL environment variable.');
+  }
+  const url = new URL(process.env.DATABASE_URL);
+  url.searchParams.set('schema', schemaId);
+
+  return url.toString();
 }
+
+const schemaId = randomUUID();
+
+beforeAll(async () => {
+  const databaseURL = generateUniqueDatabaseURL(schemaId);
+  process.env.DATABASE_URL = databaseURL;
+
+  // ? Diferente do 'dev', o 'deploy' vai somente rodar as migrations, sem verificar o schema e gerar novas migrations
+  execSync('npx prisma migrate deploy');
+});
+
+afterAll(async () => {
+  // ? Necessário ser o executeRawUnsafe, pq esta é uma ação perigosa, onde vai deletar um schema do banco
+  await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`);
+  await prisma.$disconnect();
+});
 ```
 
-- Necessário instalar o `npm-run-all` para rodar os scripts de teste e2e.
+- Criar um novo arquivo de configuração do Vitest mas para os testes e2e (`vite.config.e2e.ts`):
 
-```sh
-# Executar scripts, os convertendo para funcionar de acordo com o SO que esteja usando
-$ npm i npm-run-all -D
+```ts
+import { defineConfig } from 'vitest/config';
+import tsConfigPaths from 'vite-tsconfig-paths';
+
+export default defineConfig({
+  test: {
+    include: ['**/*.e2e.spec.ts'],
+    globals: true,
+    root: './',
+    setupFiles: ['./test/setup-e2e.ts'],
+  },
+  plugins: [tsConfigPaths()],
+});
 ```
 
-- Atualizar os scripts de teste para:
+> A configuração `setupFiles` vai receber o arquivo `setup-e2e.ts` que irá executar antes dos testes para preparar o ambiente isolado.
+
+- Atualizar os scripts de teste em `package.json`:
 
 ```json
 "scripts": {
   ...
-  "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
-  "test:install-prisma-environment": "npm link vitest-environment-prisma",
-  "test": "vitest run --dir src/domain/use-cases",
-  "test:watch": "vitest --dir src/domain/use-cases",
-  "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment",
-  "test:e2e": "vitest run --dir src/infra/http",
-  "test:e2e:watch": "vitest --dir src/infra/http",
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+  "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts",
   "test:coverage": "vitest run --coverage",
   "test:ui": "vitest --ui"
 }

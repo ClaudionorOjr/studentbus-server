@@ -5,7 +5,6 @@ export interface StudentProfileProps {
   completeName: string
   email: string
   phone: string
-  studentId: string
   birthdate: Date
   responsibleName?: string
   responsiblePhone?: string
@@ -28,10 +27,6 @@ export class StudentProfile extends ValueObject<StudentProfileProps> {
 
   get phone() {
     return this.props.phone
-  }
-
-  get studentId() {
-    return this.props.studentId
   }
 
   get birthdate() {

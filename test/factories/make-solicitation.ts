@@ -43,9 +43,6 @@ export class SolicitationFactory {
   ): Promise<Solicitation> {
     const solicitation = makeSolicitation(data)
 
-    // ! Remover console.log
-    console.log('makePrismaSolicitation: ' + process.env.DATABASE_URL)
-
     await this.prisma.solicitation.create({
       data: PrismaSolicitationMapper.toPrisma(solicitation),
     })

@@ -14,8 +14,6 @@ export async function registerStudent(
   const { solicitationId } = registerStudentParamsSchema.parse(request.params)
 
   try {
-    // ! Remover console.log
-    console.log('register student controller: ' + process.env.DATABASE_URL)
     const registerStudentUseCase = makeRegisterStudentUseCase()
 
     const result = await registerStudentUseCase.execute({ solicitationId })

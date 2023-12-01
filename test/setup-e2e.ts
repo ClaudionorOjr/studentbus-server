@@ -25,9 +25,6 @@ beforeAll(async () => {
 
   process.env.DATABASE_URL = databaseURL
 
-  // ! Remover console.log
-  console.log('setup-e2e: ' + process.env.DATABASE_URL)
-
   // ? Diferente do 'dev', o 'deploy' vai somente rodar as migrations, sem verificar o schema e gerar novas migrations
   execSync('npx prisma migrate deploy')
 })

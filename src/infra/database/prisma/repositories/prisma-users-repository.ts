@@ -8,7 +8,6 @@ let prisma: PrismaClient
 
 export class PrismaUsersRepository implements UsersRepository {
   constructor() {
-    console.log('PrismaUserRepository: ' + process.env.DATABASE_URL)
     if (!prisma) {
       prisma = getPrisma()
     }

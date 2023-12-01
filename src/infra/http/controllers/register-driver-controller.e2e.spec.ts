@@ -1,4 +1,3 @@
-import { getPrisma } from '@infra/database/prisma'
 import { PrismaClient } from '@prisma/client'
 import { FastifyInstance } from 'fastify'
 import request from 'supertest'
@@ -9,7 +8,7 @@ describe('Register driver (e2e)', () => {
 
   beforeAll(async () => {
     app = (await import('src/app')).app
-    prisma = getPrisma()
+    prisma = (await import('@infra/database/prisma')).getPrisma()
 
     await app.ready()
   })

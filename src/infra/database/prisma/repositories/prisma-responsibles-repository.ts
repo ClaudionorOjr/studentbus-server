@@ -8,7 +8,6 @@ let prisma: PrismaClient
 
 export class PrismaResponsiblesRepository implements ResponsiblesRepository {
   constructor() {
-    console.log('PrismaResponsiblessRepository: ' + process.env.DATABASE_URL)
     if (!prisma) {
       prisma = getPrisma()
     }
@@ -23,10 +22,27 @@ export class PrismaResponsiblesRepository implements ResponsiblesRepository {
   }
 
   async findByStudentId(studentId: string): Promise<Responsible | null> {
-    throw new Error('Method not implemented.')
+    const student = await prisma.responsible.findFirst({
+      where: {
+        userId: studentId,
+      },
+    })
+
+    if (!student) {
+      return null
+    }
+
+    return PrismaResponsibleMapper.toDomain(student)
   }
 
   async save(responsible: Responsible): Promise<void> {
-    throw new Error('Method not implemented.')
+    const data = PrismaResponsibleMapper.toPrisma(responsible)
+
+    await prisma.responsible.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    })
   }
 }

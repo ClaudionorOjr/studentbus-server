@@ -1,7 +1,12 @@
-import { Responsible } from '@account/enterprise/entities/responsible'
-import { Student } from '@account/enterprise/entities/student'
+import {
+  Responsible,
+  ResponsibleProps,
+} from '@account/enterprise/entities/responsible'
+import { Student, StudentProps } from '@account/enterprise/entities/student'
 import { User, UserProps } from '@core/entities/user'
 import { faker } from '@faker-js/faker'
+import { PrismaResponsibleMapper } from '@infra/database/prisma/mappers/prisma-responsible-mapper'
+import { PrismaStudentMapper } from '@infra/database/prisma/mappers/prisma-student-mapper'
 import { PrismaUserMapper } from '@infra/database/prisma/mappers/prisma-user-mapper'
 import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
@@ -29,22 +34,7 @@ export function makeUser(override: Partial<UserProps> = {}, id?: string): User {
   return user
 }
 
-export class UserFactory {
-  constructor(private prisma: PrismaClient) {}
-  async makePrismaUser(data: Partial<UserProps> = {}): Promise<User> {
-    // ! Remover console.log
-    console.log('userFactory: ' + process.env.DATABASE_URL)
-    const user = makeUser(data)
-
-    await this.prisma.user.create({
-      data: PrismaUserMapper.toPrisma(user),
-    })
-
-    return user
-  }
-}
-
-export function makeStudent(override: Partial<Student> = {}, id: string) {
+export function makeStudent(override: Partial<StudentProps> = {}, id: string) {
   const student = Student.create(
     {
       birthdate: faker.date.recent(),
@@ -57,7 +47,7 @@ export function makeStudent(override: Partial<Student> = {}, id: string) {
 }
 
 export function makeResponsible(
-  override: Partial<Responsible> = {},
+  override: Partial<ResponsibleProps> = {},
   id?: string,
 ) {
   const responsible = Responsible.create(
@@ -72,4 +62,43 @@ export function makeResponsible(
   )
 
   return responsible
+}
+
+export class UserFactory {
+  constructor(private prisma: PrismaClient) {}
+  async makePrismaUser(data: Partial<UserProps> = {}): Promise<User> {
+    const user = makeUser(data)
+
+    await this.prisma.user.create({
+      data: PrismaUserMapper.toPrisma(user),
+    })
+
+    return user
+  }
+
+  async makePrismaStudent(
+    data: Partial<StudentProps> = {},
+    id: string,
+  ): Promise<Student> {
+    const student = makeStudent(data, id)
+
+    await this.prisma.student.create({
+      data: PrismaStudentMapper.toPrisma(student),
+    })
+
+    return student
+  }
+
+  async makePrismaResponsible(
+    data: Partial<ResponsibleProps> = {},
+    id?: string,
+  ) {
+    const responsible = makeResponsible(data, id)
+
+    await this.prisma.responsible.create({
+      data: PrismaResponsibleMapper.toPrisma(responsible),
+    })
+
+    return responsible
+  }
 }

@@ -8,7 +8,6 @@ let prisma: PrismaClient
 
 export class PrismaSolicitatitonsRepository implements SolicitationsRepository {
   constructor() {
-    console.log('PrismaSolicitationsRepository: ' + process.env.DATABASE_URL)
     // * Carregue o prisma apenas quando a classe for instanciada, para que assim utilize o schema randômico para os testes e2e.
     if (!prisma) {
       prisma = getPrisma()

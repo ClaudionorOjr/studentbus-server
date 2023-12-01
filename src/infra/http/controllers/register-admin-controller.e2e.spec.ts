@@ -1,15 +1,14 @@
-import { getPrisma } from '@infra/database/prisma'
 import { PrismaClient } from '@prisma/client'
 import { FastifyInstance } from 'fastify'
 import request from 'supertest'
 
-describe('Register Admin (e2e)', () => {
+describe('Register admin (e2e)', () => {
   let app: FastifyInstance
   let prisma: PrismaClient
 
   beforeAll(async () => {
     app = (await import('src/app')).app
-    prisma = getPrisma()
+    prisma = (await import('@infra/database/prisma')).getPrisma()
 
     await app.ready()
   })

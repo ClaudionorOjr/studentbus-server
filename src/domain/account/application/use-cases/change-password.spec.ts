@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { AlterPasswordUseCase } from './alter-password'
+import { ChangePasswordUseCase } from './change-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
@@ -8,16 +8,16 @@ import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 let usersRepository: InMemoryUsersRepository
 let fakerHasher: FakeHasher
-let sut: AlterPasswordUseCase
+let sut: ChangePasswordUseCase
 
-describe('Alter password use case', () => {
+describe('Change password use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     fakerHasher = new FakeHasher()
-    sut = new AlterPasswordUseCase(usersRepository, fakerHasher)
+    sut = new ChangePasswordUseCase(usersRepository, fakerHasher)
   })
 
-  it('should be able to alter user password', async () => {
+  it('should be able to change user password', async () => {
     await usersRepository.create(
       makeUser(
         {
@@ -45,7 +45,7 @@ describe('Alter password use case', () => {
     expect(isNewPasswordHashed).toBeTruthy()
   })
 
-  it('should not be able to alter password a non-existing user', async () => {
+  it('should not be able to change password a non-existing user', async () => {
     const result = await sut.execute({
       userId: 'user-01',
       password: '121212',
@@ -57,7 +57,7 @@ describe('Alter password use case', () => {
     expect(result.value).toBeInstanceOf(UnregisteredUserError)
   })
 
-  it('should not be able to alter password when wrong password is passed', async () => {
+  it('should not be able to change password when wrong password is passed', async () => {
     const user = makeUser(
       {
         passwordHash: await fakerHasher.hash('123456'),

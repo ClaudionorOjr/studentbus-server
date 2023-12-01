@@ -3,13 +3,13 @@ import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 import { UsersRepository } from '../repositories/users-repository'
 import { StudentsRepository } from '../repositories/students-repository'
 
-interface DeleteUserUseCaseRequest {
+interface DeleteYourAccountUseCaseRequest {
   userId: string
 }
 
-type DeleteUserUseCaseReponse = Either<UnregisteredUserError, object>
+type DeleteYourAccountUseCaseReponse = Either<UnregisteredUserError, object>
 
-export class DeleteUserUseCase {
+export class DeleteYourAccountUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private studentsRepository: StudentsRepository,
@@ -17,7 +17,7 @@ export class DeleteUserUseCase {
 
   async execute({
     userId,
-  }: DeleteUserUseCaseRequest): Promise<DeleteUserUseCaseReponse> {
+  }: DeleteYourAccountUseCaseRequest): Promise<DeleteYourAccountUseCaseReponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {

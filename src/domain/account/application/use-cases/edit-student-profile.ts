@@ -3,6 +3,7 @@ import { ResponsiblesRepository } from '../repositories/responsibles-repository'
 import { StudentsRepository } from '../repositories/students-repository'
 import { UsersRepository } from '../repositories/users-repository'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
+import { Responsible } from '@account/enterprise/entities/responsible'
 
 interface EditStudentProfileUseCaseRequest {
   userId: string
@@ -65,6 +66,22 @@ export class EditStudentProfileUseCase {
         degreeOfKinship ?? responsible.degreeOfKinship
 
       await this.responsiblesRepository.save(responsible)
+    }
+
+    if (
+      !responsible &&
+      responsibleName &&
+      responsiblePhone &&
+      degreeOfKinship
+    ) {
+      const responsible = Responsible.create({
+        userId: student.id,
+        responsibleName,
+        responsiblePhone,
+        degreeOfKinship,
+      })
+
+      await this.responsiblesRepository.create(responsible)
     }
 
     return success({})

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { DeleteUserUseCase } from './delete-account'
+import { DeleteYourAccountUseCase } from './delete-your-account'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
 import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
@@ -9,9 +9,9 @@ import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 let usersRepository: InMemoryUsersRepository
 let responsiblesRepository: InMemoryResponsiblesRepository
 let studentsRepository: InMemoryStudentsRepository
-let sut: DeleteUserUseCase
+let sut: DeleteYourAccountUseCase
 
-describe('Delete account use case', () => {
+describe('Delete your account use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     responsiblesRepository = new InMemoryResponsiblesRepository()
@@ -19,7 +19,7 @@ describe('Delete account use case', () => {
       usersRepository,
       responsiblesRepository,
     )
-    sut = new DeleteUserUseCase(usersRepository, studentsRepository)
+    sut = new DeleteYourAccountUseCase(usersRepository, studentsRepository)
   })
 
   it('should be able to delete a account', async () => {
@@ -34,7 +34,7 @@ describe('Delete account use case', () => {
 
   it('should be able to delete a student account', async () => {
     await usersRepository.create(makeUser({}, 'user-01'))
-    await studentsRepository.create(makeStudent({ userId: 'user-01' }))
+    await studentsRepository.create(makeStudent({}, 'user-01'))
     expect(usersRepository.users).toHaveLength(1)
     expect(studentsRepository.students).toHaveLength(1)
 

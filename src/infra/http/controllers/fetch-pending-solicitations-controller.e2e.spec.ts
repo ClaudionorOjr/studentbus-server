@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import request from 'supertest'
 import { PrismaClient } from '@prisma/client'
-import { getPrisma } from '@infra/database/prisma'
 import { SolicitationFactory } from 'test/factories/make-solicitation'
 
 describe('Fetch pending solicitations (e2e)', () => {
@@ -11,7 +10,7 @@ describe('Fetch pending solicitations (e2e)', () => {
 
   beforeAll(async () => {
     app = (await import('src/app')).app
-    prisma = getPrisma()
+    prisma = (await import('@infra/database/prisma')).getPrisma()
     solicitationFactory = new SolicitationFactory(prisma)
 
     await app.ready()

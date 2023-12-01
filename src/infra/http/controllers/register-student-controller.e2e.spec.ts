@@ -5,20 +5,19 @@ import { JwtEncrypter } from '@infra/cryptography/jwt-encrypter'
 import { UserFactory } from 'test/factories/make-user'
 import { SolicitationFactory } from 'test/factories/make-solicitation'
 
-describe('Register Student (e2e)', () => {
+describe('Register student (e2e)', () => {
   let app: FastifyInstance
   let prisma: PrismaClient
   let userFactory: UserFactory
   let solicitationFactory: SolicitationFactory
+  let jwtEncrypter: JwtEncrypter
 
   beforeAll(async () => {
     app = (await import('src/app')).app
     prisma = (await import('@infra/database/prisma')).getPrisma()
     userFactory = new UserFactory(prisma)
     solicitationFactory = new SolicitationFactory(prisma)
-
-    // ! Remover console.log
-    console.log('beforeAll register-student: ' + process.env.DATABASE_URL)
+    jwtEncrypter = new JwtEncrypter()
 
     await app.ready()
   })
@@ -30,7 +29,7 @@ describe('Register Student (e2e)', () => {
   test('[POST] /solicitations/:solicitationId/register', async () => {
     const user = await userFactory.makePrismaUser({ role: 'ADMIN' })
 
-    const accessToken = await new JwtEncrypter().encrypt({
+    const accessToken = await jwtEncrypter.encrypt({
       sub: user.id,
       role: 'ADMIN',
     })

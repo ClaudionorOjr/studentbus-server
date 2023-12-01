@@ -5,18 +5,18 @@ import { Either, failure, success } from '@core/either'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
-interface AlterPasswordUseCaseRequest {
+interface ChangePasswordUseCaseRequest {
   userId: string
   password: string
   newPassword: string
 }
 
-type AlterPasswordUseCaseResponse = Either<
+type ChangePasswordUseCaseResponse = Either<
   UnregisteredUserError | WrongCredentialsError,
   object
 >
 
-export class AlterPasswordUseCase {
+export class ChangePasswordUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private hasher: HashComparer & HashGenerator,
@@ -26,7 +26,7 @@ export class AlterPasswordUseCase {
     userId,
     password,
     newPassword,
-  }: AlterPasswordUseCaseRequest): Promise<AlterPasswordUseCaseResponse> {
+  }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {

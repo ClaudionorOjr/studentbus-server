@@ -1,20 +1,17 @@
-import { RegisterStudentUseCase } from '@account/application/use-cases/register-student'
-import { PrismaSolicitatitonsRepository } from '../repositories/prisma-solicitations-repository'
+import { EditStudentProfileUseCase } from '@account/application/use-cases/edit-student-profile'
 import { PrismaUsersRepository } from '../repositories/prisma-users-repository'
 import { PrismaStudentsRepository } from '../repositories/prisma-students-repository'
 import { PrismaResponsiblesRepository } from '../repositories/prisma-responsibles-repository'
 
-export function makeRegisterStudentUseCase() {
-  const solicitationsRepository = new PrismaSolicitatitonsRepository()
+export function makeEditStudentProfileUseCase() {
   const usersRepository = new PrismaUsersRepository()
   const studentsRepository = new PrismaStudentsRepository()
   const responsiblesRepository = new PrismaResponsiblesRepository()
-
-  const registerStudentUseCase = new RegisterStudentUseCase(
-    solicitationsRepository,
+  const editStudentProfileUseCase = new EditStudentProfileUseCase(
     usersRepository,
     studentsRepository,
     responsiblesRepository,
   )
-  return registerStudentUseCase
+
+  return editStudentProfileUseCase
 }

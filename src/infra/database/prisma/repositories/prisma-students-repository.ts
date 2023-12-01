@@ -9,7 +9,6 @@ let prisma: PrismaClient
 
 export class PrismaStudentsRepository implements StudentsRepository {
   constructor() {
-    console.log('PrismaStudentsRepository: ' + process.env.DATABASE_URL)
     if (!prisma) {
       prisma = getPrisma()
     }
@@ -38,14 +37,52 @@ export class PrismaStudentsRepository implements StudentsRepository {
   }
 
   async getProfile(userId: string): Promise<StudentProfile | null> {
-    throw new Error('Method not implemented.')
+    const student = await prisma.student.findUnique({
+      where: {
+        userId,
+      },
+      include: {
+        user: true,
+      },
+    })
+    const responsible = await prisma.responsible.findFirst({
+      where: {
+        userId,
+      },
+    })
+
+    if (!student) {
+      return null
+    }
+
+    return StudentProfile.create({
+      userId,
+      completeName: student.user.completeName,
+      email: student.user.email,
+      phone: student.user.phone,
+      birthdate: student.birthdate,
+      responsibleName: responsible?.name,
+      responsiblePhone: responsible?.phone,
+      degreeOfKinship: responsible?.degreeOfKinship,
+    })
   }
 
   async save(student: Student): Promise<void> {
-    throw new Error('Method not implemented.')
+    const data = PrismaStudentMapper.toPrisma(student)
+
+    await prisma.student.update({
+      where: {
+        userId: data.userId,
+      },
+      data,
+    })
   }
 
   async delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.')
+    await prisma.student.delete({
+      where: {
+        userId: id,
+      },
+    })
   }
 }

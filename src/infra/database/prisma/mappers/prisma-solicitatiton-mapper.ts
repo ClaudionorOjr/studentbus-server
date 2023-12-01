@@ -1,7 +1,7 @@
 import { Solicitation } from '@account/enterprise/entities/solicitation'
 import { Solicitation as RawSolicitation, Prisma } from '@prisma/client'
 
-// TODO Alter de birthdate para birthdate
+// TODO Change de birthdate para birthdate
 export class PrismaSolicitationMapper {
   /**
    * Converts a `Solicitation` object to a `Prisma.SolicitationUncheckedCreateInput` object.
