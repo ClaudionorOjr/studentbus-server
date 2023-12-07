@@ -1,6 +1,9 @@
-import { UserAlreadyExistsError } from '@account/application/use-cases/errors/user-already-exists-error'
-import { makeRegisterAdminUseCase } from '@infra/database/prisma/factories/make-register-admin-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
+
+import { RegisterAdminUseCase } from '@account/application/use-cases/register-admin'
+import { UserAlreadyExistsError } from '@account/application/use-cases/errors/user-already-exists-error'
+
 import { z } from 'zod'
 
 export async function registerAdmin(
@@ -18,7 +21,7 @@ export async function registerAdmin(
     registerAdminBodySchema.parse(request.body)
 
   try {
-    const registerAdminUseCase = makeRegisterAdminUseCase()
+    const registerAdminUseCase = container.resolve(RegisterAdminUseCase)
 
     const result = await registerAdminUseCase.execute({
       completeName,

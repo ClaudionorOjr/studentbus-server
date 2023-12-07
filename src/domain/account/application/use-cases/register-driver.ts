@@ -1,8 +1,9 @@
 import { User } from '@core/entities/user'
+import { Hasher } from '@account/cryptography/hasher'
 import { UsersRepository } from '../repositories/users-repository'
-import { HashGenerator } from '@account/cryptography/hash-generator'
 import { Either, failure, success } from '@core/either'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
+import { inject, injectable } from 'tsyringe'
 
 interface RegisterDriverUseCaseRequest {
   completeName: string
@@ -13,10 +14,13 @@ interface RegisterDriverUseCaseRequest {
 
 type RegisterDriverUseCaseResponse = Either<UserAlreadyExistsError, object>
 
+@injectable()
 export class RegisterDriverUseCase {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: UsersRepository,
-    private hashGenerator: HashGenerator,
+    @inject('Hasher')
+    private hashGenerator: Hasher,
   ) {}
 
   async execute({

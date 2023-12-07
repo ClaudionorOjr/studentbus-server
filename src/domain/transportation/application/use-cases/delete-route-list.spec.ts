@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { DeleteRouteListUseCase } from './delete-route-list'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-lists-repository'
@@ -8,8 +7,12 @@ import { makeRouteList } from 'test/factories/make-route-list'
 import { makeStudentList } from 'test/factories/make-student-list'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 import { UnregisteredInstitutionError } from '@institutional/application/use-cases/errors/unregistered-institution-error'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
+import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
 
 let usersRepository: InMemoryUsersRepository
+let studentsRepository: InMemoryStudentsRepository
+let responsiblesRepository: InMemoryResponsiblesRepository
 let routeListsRepository: InMemoryRouteListsRepository
 let studentListsRepository: InMemoryStudentListsRepository
 let sut: DeleteRouteListUseCase
@@ -17,7 +20,16 @@ let sut: DeleteRouteListUseCase
 describe('Delete route list use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    studentListsRepository = new InMemoryStudentListsRepository()
+    responsiblesRepository = new InMemoryResponsiblesRepository()
+    studentsRepository = new InMemoryStudentsRepository(
+      usersRepository,
+      responsiblesRepository,
+    )
+    studentListsRepository = new InMemoryStudentListsRepository(
+      usersRepository,
+      studentsRepository,
+      responsiblesRepository,
+    )
     routeListsRepository = new InMemoryRouteListsRepository(
       studentListsRepository,
     )

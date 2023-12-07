@@ -1,9 +1,12 @@
-import dayjs from 'dayjs'
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { makeEditStudentProfileUseCase } from '@infra/database/prisma/factories/make-edit-student-profile-use-case'
+import { container } from 'tsyringe'
+
+import { EditStudentProfileUseCase } from '@account/application/use-cases/edit-student-profile'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
+
+import { z } from 'zod'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 dayjs.extend(customParseFormat)
 
@@ -35,7 +38,9 @@ export async function editStudentProfile(
   const userId = request.user.sub
 
   try {
-    const editStudentProfileUseCase = makeEditStudentProfileUseCase()
+    const editStudentProfileUseCase = container.resolve(
+      EditStudentProfileUseCase,
+    )
 
     const result = await editStudentProfileUseCase.execute({
       userId,

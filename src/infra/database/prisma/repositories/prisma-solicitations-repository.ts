@@ -1,29 +1,23 @@
-import { SolicitationsRepository } from '@account/application/repositories/solicitations-repository'
+import { inject, injectable } from 'tsyringe'
 import { Solicitation } from '@account/enterprise/entities/solicitation'
-import { getPrisma } from '..'
+import { SolicitationsRepository } from '@account/application/repositories/solicitations-repository'
 import { PrismaSolicitationMapper } from '../mappers/prisma-solicitatiton-mapper'
-import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '..'
 
-let prisma: PrismaClient
-
+@injectable()
 export class PrismaSolicitatitonsRepository implements SolicitationsRepository {
-  constructor() {
-    // * Carregue o prisma apenas quando a classe for instanciada, para que assim utilize o schema randômico para os testes e2e.
-    if (!prisma) {
-      prisma = getPrisma()
-    }
-  }
+  constructor(@inject('Prisma') private prisma: PrismaService) {}
 
   async create(solicitation: Solicitation): Promise<void> {
     const data = PrismaSolicitationMapper.toPrisma(solicitation)
 
-    await prisma.solicitation.create({
+    await this.prisma.solicitation.create({
       data,
     })
   }
 
   async findById(id: string): Promise<Solicitation | null> {
-    const solicication = await prisma.solicitation.findUnique({
+    const solicication = await this.prisma.solicitation.findUnique({
       where: {
         id,
       },
@@ -37,13 +31,13 @@ export class PrismaSolicitatitonsRepository implements SolicitationsRepository {
   }
 
   async list(): Promise<Solicitation[]> {
-    const solicitations = await prisma.solicitation.findMany()
+    const solicitations = await this.prisma.solicitation.findMany()
 
     return solicitations.map(PrismaSolicitationMapper.toDomain)
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.solicitation.delete({
+    await this.prisma.solicitation.delete({
       where: {
         id,
       },

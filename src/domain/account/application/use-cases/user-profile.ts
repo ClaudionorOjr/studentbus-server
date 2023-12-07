@@ -2,6 +2,7 @@ import { User } from '@core/entities/user'
 import { UsersRepository } from '../repositories/users-repository'
 import { Either, failure, success } from '@core/either'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
+import { inject, injectable } from 'tsyringe'
 
 interface UserProfileUseCaseRequest {
   userId: string
@@ -9,8 +10,11 @@ interface UserProfileUseCaseRequest {
 
 type UserProfileUseCaseResponse = Either<UnregisteredUserError, { user: User }>
 
+@injectable()
 export class UserProfileUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    @inject('UsersRepository') private usersRepository: UsersRepository,
+  ) {}
 
   async execute({
     userId,

@@ -1,12 +1,15 @@
-import { makeFetchPendingSolicitationsUseCase } from '@infra/database/prisma/factories/make-fetch-pending-solicitations-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
+
+import { FetchPendingSolicitationsUseCase } from '@account/application/use-cases/fetch-pending-solicitations'
 
 export async function fetchPendingSolicitations(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const fetchPendingSolicitationsUseCase =
-    makeFetchPendingSolicitationsUseCase()
+  const fetchPendingSolicitationsUseCase = container.resolve(
+    FetchPendingSolicitationsUseCase,
+  )
 
   const result = await fetchPendingSolicitationsUseCase.execute()
 

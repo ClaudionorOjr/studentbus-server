@@ -1,29 +1,24 @@
-import { StudentsRepository } from '@account/application/repositories/students-repository'
+import { inject, injectable } from 'tsyringe'
 import { Student } from '@account/enterprise/entities/student'
 import { StudentProfile } from '@account/enterprise/entities/value-object/student-profile'
+import { StudentsRepository } from '@account/application/repositories/students-repository'
 import { PrismaStudentMapper } from '../mappers/prisma-student-mapper'
-import { PrismaClient } from '@prisma/client'
-import { getPrisma } from '..'
+import { PrismaService } from '..'
 
-let prisma: PrismaClient
-
+@injectable()
 export class PrismaStudentsRepository implements StudentsRepository {
-  constructor() {
-    if (!prisma) {
-      prisma = getPrisma()
-    }
-  }
+  constructor(@inject('Prisma') private prisma: PrismaService) {}
 
   async create(student: Student): Promise<void> {
     const data = PrismaStudentMapper.toPrisma(student)
 
-    await prisma.student.create({
+    await this.prisma.student.create({
       data,
     })
   }
 
   async findByUserId(userId: string): Promise<Student | null> {
-    const student = await prisma.student.findUnique({
+    const student = await this.prisma.student.findUnique({
       where: {
         userId,
       },
@@ -37,7 +32,7 @@ export class PrismaStudentsRepository implements StudentsRepository {
   }
 
   async getProfile(userId: string): Promise<StudentProfile | null> {
-    const student = await prisma.student.findUnique({
+    const student = await this.prisma.student.findUnique({
       where: {
         userId,
       },
@@ -45,7 +40,7 @@ export class PrismaStudentsRepository implements StudentsRepository {
         user: true,
       },
     })
-    const responsible = await prisma.responsible.findFirst({
+    const responsible = await this.prisma.responsible.findFirst({
       where: {
         userId,
       },
@@ -70,7 +65,7 @@ export class PrismaStudentsRepository implements StudentsRepository {
   async save(student: Student): Promise<void> {
     const data = PrismaStudentMapper.toPrisma(student)
 
-    await prisma.student.update({
+    await this.prisma.student.update({
       where: {
         userId: data.userId,
       },
@@ -79,7 +74,7 @@ export class PrismaStudentsRepository implements StudentsRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.student.delete({
+    await this.prisma.student.delete({
       where: {
         userId: id,
       },

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { ChangePasswordUseCase } from './change-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'

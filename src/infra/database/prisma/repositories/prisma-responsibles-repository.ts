@@ -1,28 +1,23 @@
-import { ResponsiblesRepository } from '@account/application/repositories/responsibles-repository'
+import { inject, injectable } from 'tsyringe'
 import { Responsible } from '@account/enterprise/entities/responsible'
+import { ResponsiblesRepository } from '@account/application/repositories/responsibles-repository'
 import { PrismaResponsibleMapper } from '../mappers/prisma-responsible-mapper'
-import { getPrisma } from '..'
-import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '..'
 
-let prisma: PrismaClient
-
+@injectable()
 export class PrismaResponsiblesRepository implements ResponsiblesRepository {
-  constructor() {
-    if (!prisma) {
-      prisma = getPrisma()
-    }
-  }
+  constructor(@inject('Prisma') private prisma: PrismaService) {}
 
   async create(responsible: Responsible): Promise<void> {
     const data = PrismaResponsibleMapper.toPrisma(responsible)
 
-    await prisma.responsible.create({
+    await this.prisma.responsible.create({
       data,
     })
   }
 
   async findByStudentId(studentId: string): Promise<Responsible | null> {
-    const student = await prisma.responsible.findFirst({
+    const student = await this.prisma.responsible.findFirst({
       where: {
         userId: studentId,
       },
@@ -38,7 +33,7 @@ export class PrismaResponsiblesRepository implements ResponsiblesRepository {
   async save(responsible: Responsible): Promise<void> {
     const data = PrismaResponsibleMapper.toPrisma(responsible)
 
-    await prisma.responsible.update({
+    await this.prisma.responsible.update({
       where: {
         id: data.id,
       },

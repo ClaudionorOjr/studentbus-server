@@ -1,6 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { makeSignupStudentUseCase } from '@infra/database/prisma/factories/make-signup-student-use-case'
+import { container } from 'tsyringe'
+
+import { SignUpStudentUseCase } from '@account/application/use-cases/signup-student'
 import { UserAlreadyExistsError } from '@account/application/use-cases/errors/user-already-exists-error'
+
 import { z } from 'zod'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -36,7 +39,7 @@ export async function signUpStudent(
   } = signUpStudentBodySchema.parse(request.body)
 
   try {
-    const signUpStudentUseCase = makeSignupStudentUseCase()
+    const signUpStudentUseCase = container.resolve(SignUpStudentUseCase)
 
     const result = await signUpStudentUseCase.execute({
       completeName,

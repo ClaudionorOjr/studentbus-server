@@ -1,6 +1,9 @@
-import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { makeRegisterStudentUseCase } from '@infra/database/prisma/factories/make-register-student-use-case'
+import { container } from 'tsyringe'
+
+import { RegisterStudentUseCase } from '@account/application/use-cases/register-student'
+import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
+
 import { z } from 'zod'
 
 export async function registerStudent(
@@ -14,7 +17,7 @@ export async function registerStudent(
   const { solicitationId } = registerStudentParamsSchema.parse(request.params)
 
   try {
-    const registerStudentUseCase = makeRegisterStudentUseCase()
+    const registerStudentUseCase = container.resolve(RegisterStudentUseCase)
 
     const result = await registerStudentUseCase.execute({ solicitationId })
 

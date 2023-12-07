@@ -1,6 +1,7 @@
-import { Either, failure, success } from '@core/either'
-import { StudentsRepository } from '../repositories/students-repository'
+import { inject, injectable } from 'tsyringe'
 import { StudentProfile } from '@account/enterprise/entities/value-object/student-profile'
+import { StudentsRepository } from '../repositories/students-repository'
+import { Either, failure, success } from '@core/either'
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 export interface StudentProfileUseCaseRequest {
@@ -14,8 +15,12 @@ type StudentProfileUseCaseResponse = Either<
   }
 >
 
+@injectable()
 export class StudentProfileUseCase {
-  constructor(private studentsRepository: StudentsRepository) {}
+  constructor(
+    @inject('StudentsRepository')
+    private studentsRepository: StudentsRepository,
+  ) {}
 
   async execute({
     userId,

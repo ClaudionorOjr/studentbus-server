@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { DeleteYourAccountUseCase } from './delete-your-account'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'

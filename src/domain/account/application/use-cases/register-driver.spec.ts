@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { RegisterDriverUseCase } from './register-driver'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { faker } from '@faker-js/faker'

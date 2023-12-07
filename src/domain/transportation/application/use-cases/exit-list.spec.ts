@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { ExitListUseCase } from './exit-list'
 import { InMemoryStudentListsRepository } from 'test/repositories/in-memory-student-lists-repository'
 import { makeStudentList } from 'test/factories/make-student-list'
@@ -7,14 +6,30 @@ import { makeRouteList } from 'test/factories/make-route-list'
 import { NotAllowedError } from '@core/errors/not-allowerd-error'
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 import { UserNotOnListError } from './errors/user-not-on-list-error'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
+import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
 
+let usersRepository: InMemoryUsersRepository
+let studentsRepository: InMemoryStudentsRepository
+let responsiblesRepository: InMemoryResponsiblesRepository
 let studentListsRepository: InMemoryStudentListsRepository
 let routeListsRepository: InMemoryRouteListsRepository
 let sut: ExitListUseCase
 
 describe('Exit list use case', () => {
   beforeEach(() => {
-    studentListsRepository = new InMemoryStudentListsRepository()
+    usersRepository = new InMemoryUsersRepository()
+    responsiblesRepository = new InMemoryResponsiblesRepository()
+    studentsRepository = new InMemoryStudentsRepository(
+      usersRepository,
+      responsiblesRepository,
+    )
+    studentListsRepository = new InMemoryStudentListsRepository(
+      usersRepository,
+      studentsRepository,
+      responsiblesRepository,
+    )
     routeListsRepository = new InMemoryRouteListsRepository(
       studentListsRepository,
     )

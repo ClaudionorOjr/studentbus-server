@@ -1,7 +1,8 @@
+import { inject, injectable } from 'tsyringe'
 import { UsersRepository } from '../repositories/users-repository'
-import { SolicitationsRepository } from '../repositories/solicitations-repository'
 import { Solicitation } from '@account/enterprise/entities/solicitation'
-import { HashGenerator } from '@account/cryptography/hash-generator'
+import { SolicitationsRepository } from '../repositories/solicitations-repository'
+import { Hasher } from '@account/cryptography/hasher'
 import { Either, failure, success } from '@core/either'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
@@ -18,10 +19,14 @@ interface SignUpStudentUseCaseRequest {
 
 type SignUpStudentUseCaseResponse = Either<UserAlreadyExistsError, object>
 
+@injectable()
 export class SignUpStudentUseCase {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: UsersRepository,
-    private hashGenerator: HashGenerator,
+    @inject('Hasher')
+    private hashGenerator: Hasher,
+    @inject('SolicitationsRepository')
     private solicitationsRepository: SolicitationsRepository,
   ) {}
 

@@ -1,28 +1,23 @@
-import { UsersRepository } from '@account/application/repositories/users-repository'
+import { inject, injectable } from 'tsyringe'
 import { User } from '@core/entities/user'
+import { UsersRepository } from '@account/application/repositories/users-repository'
 import { PrismaUserMapper } from '../mappers/prisma-user-mapper'
-import { PrismaClient } from '@prisma/client'
-import { getPrisma } from '..'
+import { PrismaService } from '..'
 
-let prisma: PrismaClient
-
+@injectable()
 export class PrismaUsersRepository implements UsersRepository {
-  constructor() {
-    if (!prisma) {
-      prisma = getPrisma()
-    }
-  }
+  constructor(@inject('Prisma') private prisma: PrismaService) {}
 
   async create(user: User): Promise<void> {
     const data = PrismaUserMapper.toPrisma(user)
 
-    await prisma.user.create({
+    await this.prisma.user.create({
       data,
     })
   }
 
   async findById(id: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         id,
       },
@@ -36,7 +31,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
@@ -52,7 +47,7 @@ export class PrismaUsersRepository implements UsersRepository {
   async save(user: User): Promise<void> {
     const data = PrismaUserMapper.toPrisma(user)
 
-    await prisma.user.update({
+    await this.prisma.user.update({
       where: {
         id: data.id,
       },
@@ -61,7 +56,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.user.delete({
+    await this.prisma.user.delete({
       where: {
         id,
       },

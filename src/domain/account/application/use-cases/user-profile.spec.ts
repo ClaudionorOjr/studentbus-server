@@ -1,4 +1,4 @@
-import { describe, beforeEach, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { UserProfileUseCase } from './user-profile'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'

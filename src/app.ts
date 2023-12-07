@@ -1,9 +1,12 @@
+import 'reflect-metadata'
 import fastify from 'fastify'
 import fastifyJwt from '@fastify/jwt'
+import fastifyCookie from '@fastify/cookie'
+
+import { env } from '@infra/env'
 import { routes } from './infra/http/controllers/routes'
 import { ZodError } from 'zod'
-import { env } from '@infra/env'
-import fastifyCookie from '@fastify/cookie'
+import '@infra/container'
 
 export const app = fastify()
 

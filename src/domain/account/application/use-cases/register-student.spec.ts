@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { RegisterStudentUseCase } from './register-student'
 import { InMemorySolicitationsRepository } from 'test/repositories/in-memory-solicitations-repository'
 import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'

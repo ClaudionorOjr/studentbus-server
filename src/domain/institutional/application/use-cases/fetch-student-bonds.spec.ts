@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { FetchStudentBondsUseCase } from './fetch-student-bonds'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryBondsRepository } from 'test/repositories/in-memory-bonds-repository'

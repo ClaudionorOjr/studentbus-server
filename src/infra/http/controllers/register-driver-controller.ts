@@ -1,6 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
+
+import { RegisterDriverUseCase } from '@account/application/use-cases/register-driver'
 import { UserAlreadyExistsError } from '@account/application/use-cases/errors/user-already-exists-error'
-import { makeRegisterDriverUseCase } from '@infra/database/prisma/factories/make-register-driver-use-case'
+
 import { z } from 'zod'
 
 export async function registerDriver(
@@ -18,7 +21,7 @@ export async function registerDriver(
     registerDriverBodySchema.parse(request.body)
 
   try {
-    const registerDriverUseCase = makeRegisterDriverUseCase()
+    const registerDriverUseCase = container.resolve(RegisterDriverUseCase)
 
     const result = await registerDriverUseCase.execute({
       completeName,

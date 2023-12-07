@@ -1,9 +1,10 @@
-import { Either, failure, success } from '@core/either'
+import { inject, injectable } from 'tsyringe'
+import { Responsible } from '@account/enterprise/entities/responsible'
 import { ResponsiblesRepository } from '../repositories/responsibles-repository'
 import { StudentsRepository } from '../repositories/students-repository'
 import { UsersRepository } from '../repositories/users-repository'
+import { Either, failure, success } from '@core/either'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
-import { Responsible } from '@account/enterprise/entities/responsible'
 
 interface EditStudentProfileUseCaseRequest {
   userId: string
@@ -17,10 +18,14 @@ interface EditStudentProfileUseCaseRequest {
 
 type EditStudentProfileUseCaseResponse = Either<UnregisteredUserError, object>
 
+@injectable()
 export class EditStudentProfileUseCase {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: UsersRepository,
+    @inject('StudentsRepository')
     private studentsRepository: StudentsRepository,
+    @inject('ResponsiblesRepository')
     private responsiblesRepository: ResponsiblesRepository,
   ) {}
 

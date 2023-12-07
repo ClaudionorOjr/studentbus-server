@@ -1,16 +1,17 @@
+import 'reflect-metadata'
 import { FastifyInstance } from 'fastify'
-import request from 'supertest'
-import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '@infra/database/prisma'
 import { SolicitationFactory } from 'test/factories/make-solicitation'
+import request from 'supertest'
 
 describe('Fetch pending solicitations (e2e)', () => {
   let app: FastifyInstance
-  let prisma: PrismaClient
+  let prisma: PrismaService
   let solicitationFactory: SolicitationFactory
 
   beforeAll(async () => {
     app = (await import('src/app')).app
-    prisma = (await import('@infra/database/prisma')).getPrisma()
+    prisma = new PrismaService()
     solicitationFactory = new SolicitationFactory(prisma)
 
     await app.ready()

@@ -1,5 +1,6 @@
-import { HashComparer } from '@account/cryptography/hash-comparer'
+import { inject, injectable } from 'tsyringe'
 import { UsersRepository } from '../repositories/users-repository'
+import { Hasher } from '@account/cryptography/hasher'
 import { Encrypter } from '@account/cryptography/encrypter'
 import { Either, failure, success } from '@core/either'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
@@ -16,10 +17,14 @@ type AuthenticateUseCaseResponse = Either<
   }
 >
 
+@injectable()
 export class AuthenticateUseCase {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: UsersRepository,
-    private hashComparer: HashComparer,
+    @inject('Hasher')
+    private hashComparer: Hasher,
+    @inject('Encrypter')
     private encrypter: Encrypter,
   ) {}
 

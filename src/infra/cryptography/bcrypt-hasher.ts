@@ -1,8 +1,9 @@
-import { HashComparer } from '@account/cryptography/hash-comparer'
-import { HashGenerator } from '@account/cryptography/hash-generator'
+import { injectable } from 'tsyringe'
+import { Hasher } from '@account/cryptography/hasher'
 import { compare, hash } from 'bcryptjs'
 
-export class BcryptHasher implements HashGenerator, HashComparer {
+@injectable()
+export class BcryptHasher implements Hasher {
   readonly HASH_SALT_LENGTH = 8
 
   /**

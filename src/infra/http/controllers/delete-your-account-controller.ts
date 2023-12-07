@@ -1,5 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { makeDeleteYourAccountUseCase } from '@infra/database/prisma/factories/make-delete-your-account-use-case'
+import { container } from 'tsyringe'
+
+import { DeleteYourAccountUseCase } from '@account/application/use-cases/delete-your-account'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 export async function deleteYourAccount(
@@ -9,7 +11,7 @@ export async function deleteYourAccount(
   const userId = request.user.sub
 
   try {
-    const deleteYourAccountUseCase = makeDeleteYourAccountUseCase()
+    const deleteYourAccountUseCase = container.resolve(DeleteYourAccountUseCase)
 
     const result = await deleteYourAccountUseCase.execute({ userId })
 

@@ -1,20 +1,21 @@
-import request from 'supertest'
+import 'reflect-metadata'
+import { PrismaService } from '@infra/database/prisma'
 import { FastifyInstance } from 'fastify'
-import { PrismaClient } from '@prisma/client'
-import { JwtEncrypter } from '@infra/cryptography/jwt-encrypter'
 import { UserFactory } from 'test/factories/make-user'
 import { SolicitationFactory } from 'test/factories/make-solicitation'
+import { JwtEncrypter } from '@infra/cryptography/jwt-encrypter'
+import request from 'supertest'
 
 describe('Register student (e2e)', () => {
   let app: FastifyInstance
-  let prisma: PrismaClient
+  let prisma: PrismaService
   let userFactory: UserFactory
   let solicitationFactory: SolicitationFactory
   let jwtEncrypter: JwtEncrypter
 
   beforeAll(async () => {
     app = (await import('src/app')).app
-    prisma = (await import('@infra/database/prisma')).getPrisma()
+    prisma = new PrismaService()
     userFactory = new UserFactory(prisma)
     solicitationFactory = new SolicitationFactory(prisma)
     jwtEncrypter = new JwtEncrypter()

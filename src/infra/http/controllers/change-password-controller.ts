@@ -1,7 +1,10 @@
+import { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
+
+import { ChangePasswordUseCase } from '@account/application/use-cases/change-password'
 import { WrongCredentialsError } from '@account/application/use-cases/errors/wrong-credentials-error'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
-import { makeChangePasswordUseCase } from '@infra/database/prisma/factories/make-change-password-use-case'
-import { FastifyReply, FastifyRequest } from 'fastify'
+
 import { z } from 'zod'
 
 export async function changePassword(
@@ -16,8 +19,9 @@ export async function changePassword(
   const { password, newPassword } = changePasswordBodySchema.parse(request.body)
 
   const userId = request.user.sub
+
   try {
-    const changePasswordUseCase = makeChangePasswordUseCase()
+    const changePasswordUseCase = container.resolve(ChangePasswordUseCase)
 
     const result = await changePasswordUseCase.execute({
       userId,

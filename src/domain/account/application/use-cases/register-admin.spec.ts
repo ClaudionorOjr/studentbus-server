@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { RegisterAdminUseCase } from './register-admin'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { faker } from '@faker-js/faker'

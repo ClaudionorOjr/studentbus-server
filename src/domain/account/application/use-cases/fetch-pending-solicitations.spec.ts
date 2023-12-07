@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import { FetchPendingSolicitationsUseCase } from './fetch-pending-solicitations'
 import { InMemorySolicitationsRepository } from 'test/repositories/in-memory-solicitations-repository'
 import { makeSolicitation } from 'test/factories/make-solicitation'

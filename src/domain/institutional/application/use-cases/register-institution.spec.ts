@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { RegisterInstitutionUseCase } from './register-institution'
 import { InMemoryInstitutionsRepository } from 'test/repositories/in-memory-institutions-repository'
 import { Institution } from '../../enterprise/entities/institution'

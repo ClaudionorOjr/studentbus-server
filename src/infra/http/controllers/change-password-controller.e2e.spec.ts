@@ -1,20 +1,21 @@
-import { PrismaClient } from '@prisma/client'
+import 'reflect-metadata'
 import { FastifyInstance } from 'fastify'
+import { PrismaService } from '@infra/database/prisma'
 import { UserFactory } from 'test/factories/make-user'
-import request from 'supertest'
 import { JwtEncrypter } from '@infra/cryptography/jwt-encrypter'
 import { BcryptHasher } from '@infra/cryptography/bcrypt-hasher'
+import request from 'supertest'
 
 describe('Change password (e2e)', () => {
   let app: FastifyInstance
-  let prisma: PrismaClient
+  let prisma: PrismaService
   let userFactory: UserFactory
   let jwtEncrypter: JwtEncrypter
   let bcryptHasher: BcryptHasher
 
   beforeAll(async () => {
     app = (await import('src/app')).app
-    prisma = (await import('@infra/database/prisma')).getPrisma()
+    prisma = new PrismaService()
     userFactory = new UserFactory(prisma)
     jwtEncrypter = new JwtEncrypter()
     bcryptHasher = new BcryptHasher()

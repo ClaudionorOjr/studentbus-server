@@ -1,6 +1,6 @@
+import { inject, injectable } from 'tsyringe'
 import { UsersRepository } from '../repositories/users-repository'
-import { HashComparer } from '@account/cryptography/hash-comparer'
-import { HashGenerator } from '@account/cryptography/hash-generator'
+import { Hasher } from '@account/cryptography/hasher'
 import { Either, failure, success } from '@core/either'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
@@ -16,10 +16,13 @@ type ChangePasswordUseCaseResponse = Either<
   object
 >
 
+@injectable()
 export class ChangePasswordUseCase {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: UsersRepository,
-    private hasher: HashComparer & HashGenerator,
+    @inject('Hasher')
+    private hasher: Hasher,
   ) {}
 
   async execute({

@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { CloseRouteList } from './close-route-list'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-lists-repository'
@@ -7,8 +6,12 @@ import { makeRouteList } from 'test/factories/make-route-list'
 import { InMemoryStudentListsRepository } from 'test/repositories/in-memory-student-lists-repository'
 import { NotAllowedError } from '@core/errors/not-allowerd-error'
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
+import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
 
 let usersRepository: InMemoryUsersRepository
+let studentsRepository: InMemoryStudentsRepository
+let responsiblesRepository: InMemoryResponsiblesRepository
 let routeListsRepository: InMemoryRouteListsRepository
 let studentListsRepository: InMemoryStudentListsRepository
 let sut: CloseRouteList
@@ -16,7 +19,16 @@ let sut: CloseRouteList
 describe('Close route list use case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    studentListsRepository = new InMemoryStudentListsRepository()
+    responsiblesRepository = new InMemoryResponsiblesRepository()
+    studentsRepository = new InMemoryStudentsRepository(
+      usersRepository,
+      responsiblesRepository,
+    )
+    studentListsRepository = new InMemoryStudentListsRepository(
+      usersRepository,
+      studentsRepository,
+      responsiblesRepository,
+    )
 
     routeListsRepository = new InMemoryRouteListsRepository(
       studentListsRepository,

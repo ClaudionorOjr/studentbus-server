@@ -1,6 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
+
+import { AuthenticateUseCase } from '@account/application/use-cases/authenticate'
 import { WrongCredentialsError } from '@account/application/use-cases/errors/wrong-credentials-error'
-import { makeAuthenticateUseCase } from '@infra/database/prisma/factories/make-authenticate-use-case'
+
 import { z } from 'zod'
 
 export async function authenticate(
@@ -12,10 +15,10 @@ export async function authenticate(
     password: z.coerce.string().min(6),
   })
 
-  try {
-    const { email, password } = authenticateBodySchema.parse(request.body)
+  const { email, password } = authenticateBodySchema.parse(request.body)
 
-    const authenticateUseCase = makeAuthenticateUseCase()
+  try {
+    const authenticateUseCase = container.resolve(AuthenticateUseCase)
 
     const result = await authenticateUseCase.execute({
       email,

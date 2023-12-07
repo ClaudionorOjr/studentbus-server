@@ -1,6 +1,8 @@
-import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
-import { makeUserProfileUseCase } from '@infra/database/prisma/factories/make-user-profile-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
+
+import { UserProfileUseCase } from '@account/application/use-cases/user-profile'
+import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
 export async function userProfile(
   request: FastifyRequest,
@@ -9,7 +11,7 @@ export async function userProfile(
   const userId = request.user.sub
 
   try {
-    const userProfileUseCase = makeUserProfileUseCase()
+    const userProfileUseCase = container.resolve(UserProfileUseCase)
 
     const result = await userProfileUseCase.execute({ userId })
 

@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { DeleteInstitutionUseCase } from './delete-institution'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryInstitutionsRepository } from 'test/repositories/in-memory-institutions-repository'

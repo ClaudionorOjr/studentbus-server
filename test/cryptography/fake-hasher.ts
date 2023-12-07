@@ -1,7 +1,6 @@
-import { HashComparer } from '@account/cryptography/hash-comparer'
-import { HashGenerator } from '@account/cryptography/hash-generator'
+import { Hasher } from '@account/cryptography/hasher'
 
-export class FakeHasher implements HashGenerator, HashComparer {
+export class FakeHasher implements Hasher {
   async hash(plain: string): Promise<string> {
     return plain.concat('-hashed')
   }

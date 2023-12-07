@@ -7,6 +7,7 @@ import { Responsible } from '@account/enterprise/entities/responsible'
 import { ResponsiblesRepository } from '../repositories/responsibles-repository'
 import { Either, failure, success } from '@core/either'
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
+import { inject, injectable } from 'tsyringe'
 
 interface RegisterStudentUseCaseRequest {
   solicitationId: string
@@ -14,11 +15,16 @@ interface RegisterStudentUseCaseRequest {
 
 type RegisterStudentUseCaseResponse = Either<ResourceNotFoundError, object>
 
+@injectable()
 export class RegisterStudentUseCase {
   constructor(
+    @inject('SolicitationsRepository')
     private solicitationsRepository: SolicitationsRepository,
+    @inject('UsersRepository')
     private usersRepository: UsersRepository,
+    @inject('StudentsRepository')
     private studentsRepository: StudentsRepository,
+    @inject('ResponsiblesRepository')
     private responsiblesRepository: ResponsiblesRepository,
   ) {}
 

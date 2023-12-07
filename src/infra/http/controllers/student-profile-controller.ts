@@ -1,5 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { makeStudentProfileUseCase } from '@infra/database/prisma/factories/make-student-profile-use-case'
+import { container } from 'tsyringe'
+
+import { StudentProfileUseCase } from '@account/application/use-cases/student-profile'
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 export async function studentProfile(
@@ -9,7 +11,7 @@ export async function studentProfile(
   const userId = request.user.sub
 
   try {
-    const studentProfileUseCase = makeStudentProfileUseCase()
+    const studentProfileUseCase = container.resolve(StudentProfileUseCase)
 
     const result = await studentProfileUseCase.execute({ userId })
 

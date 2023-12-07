@@ -154,6 +154,41 @@ $ npm i supertest -D
 ---
 
 <details>
+  <summary><a>TSyringe</a></summary>
+
+```sh
+# Instalação Tsyringe para injeção automatica de dependências
+$ npm i tsyringe
+
+# Necessário instalar o `reflect-metadata`
+$ npm i reflect-metadata
+```
+
+- Modificar o `tsconfig.json` para incluir as seguintes configurações:
+
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+- Configurações do `app.ts` para o funcionamento do tsyringe:
+
+```ts
+// Deve ser importada na primeira linha do arquivo
+import 'reflect-metadata'
+...
+import '@infra/container'
+```
+
+</details>
+
+---
+
+<details>
   <summary><a>TypeScript</a></summary>
 
 ```sh

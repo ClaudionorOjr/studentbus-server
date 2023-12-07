@@ -1,16 +1,31 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { FetchRouteListsHistory } from './fetch-route-lists-history'
 import { InMemoryRouteListsRepository } from 'test/repositories/in-memory-route-lists-repository'
 import { makeRouteList } from 'test/factories/make-route-list'
 import { InMemoryStudentListsRepository } from 'test/repositories/in-memory-student-lists-repository'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
+import { InMemoryResponsiblesRepository } from 'test/repositories/in-memory-responsibles-repository'
 
+let usersRepository: InMemoryUsersRepository
+let studentsRepository: InMemoryStudentsRepository
+let responsiblesRepository: InMemoryResponsiblesRepository
 let routeListsRepository: InMemoryRouteListsRepository
 let studentListsRepository: InMemoryStudentListsRepository
 let sut: FetchRouteListsHistory
 
 describe('Fetch route lists history use case', () => {
   beforeEach(() => {
-    studentListsRepository = new InMemoryStudentListsRepository()
+    usersRepository = new InMemoryUsersRepository()
+    responsiblesRepository = new InMemoryResponsiblesRepository()
+    studentsRepository = new InMemoryStudentsRepository(
+      usersRepository,
+      responsiblesRepository,
+    )
+    studentListsRepository = new InMemoryStudentListsRepository(
+      usersRepository,
+      studentsRepository,
+      responsiblesRepository,
+    )
     routeListsRepository = new InMemoryRouteListsRepository(
       studentListsRepository,
     )
