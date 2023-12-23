@@ -8,9 +8,9 @@ export class InMemoryResponsiblesRepository implements ResponsiblesRepository {
     this.responsibles.push(responsible)
   }
 
-  async findByStudentId(userId: string): Promise<Responsible | null> {
+  async findByStudentId(studentId: string): Promise<Responsible | null> {
     const responsible = this.responsibles.find(
-      (responsible) => responsible.userId === userId,
+      (responsible) => responsible.studentId === studentId,
     )
 
     if (!responsible) {
@@ -21,10 +21,10 @@ export class InMemoryResponsiblesRepository implements ResponsiblesRepository {
   }
 
   async save(responsible: Responsible): Promise<void> {
-    const userIndex = this.responsibles.findIndex(
-      (user) => user.id === responsible.id,
+    const studentIndex = this.responsibles.findIndex(
+      (student) => student.id === responsible.id,
     )
 
-    this.responsibles[userIndex] = responsible
+    this.responsibles[studentIndex] = responsible
   }
 }

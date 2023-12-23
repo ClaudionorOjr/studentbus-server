@@ -1,4 +1,5 @@
 import { User } from '@core/entities/user'
+import { Student } from '@account/enterprise/entities/student'
 import { User as RawUser, Prisma } from '@prisma/client'
 
 export class PrismaUserMapper {
@@ -39,6 +40,27 @@ export class PrismaUserMapper {
         updatedAt: raw.updatedAt,
       },
       raw.id,
+    )
+  }
+
+  /**
+   * Converts a `Student` object to a `User` object.
+   *
+   * @param {Student} student - The `Student` object to convert.
+   * @return {User} - The converted `User` object.
+   */
+  static toUser(student: Student): User {
+    return User.create(
+      {
+        completeName: student.completeName,
+        email: student.email,
+        passwordHash: student.passwordHash,
+        phone: student.phone,
+        role: student.role,
+        createdAt: student.createdAt,
+        updatedAt: student.updatedAt,
+      },
+      student.id,
     )
   }
 }

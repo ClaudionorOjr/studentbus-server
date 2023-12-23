@@ -1,7 +1,7 @@
 import { ValueObject } from '@core/entities/value-object'
 
 export interface StudentProfileProps {
-  userId: string
+  studentId: string
   completeName: string
   email: string
   phone: string
@@ -13,8 +13,8 @@ export interface StudentProfileProps {
 }
 
 export class StudentProfile extends ValueObject<StudentProfileProps> {
-  get userId() {
-    return this.props.userId
+  get studentId() {
+    return this.props.studentId
   }
 
   get completeName() {

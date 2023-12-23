@@ -4,7 +4,7 @@ import fastifyJwt from '@fastify/jwt'
 import fastifyCookie from '@fastify/cookie'
 
 import { env } from '@infra/env'
-import { routes } from './infra/http/controllers/routes'
+import { routes } from './infra/http/routes'
 import { ZodError } from 'zod'
 import '@infra/container'
 

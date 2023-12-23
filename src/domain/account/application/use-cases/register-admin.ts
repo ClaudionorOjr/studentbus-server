@@ -1,5 +1,6 @@
 import { inject, injectable } from 'tsyringe'
 import { User } from '@core/entities/user'
+import { Admin } from '@account/enterprise/entities/admin'
 import { UsersRepository } from '../repositories/users-repository'
 import { Hasher } from '@account/cryptography/hasher'
 import { Either, failure, success } from '@core/either'
@@ -37,7 +38,7 @@ export class RegisterAdminUseCase {
 
     const passwordHash = await this.hashGenerator.hash(password)
 
-    const admin = User.create({
+    const admin = Admin.create({
       completeName,
       email,
       passwordHash,
@@ -45,7 +46,7 @@ export class RegisterAdminUseCase {
       role: 'ADMIN',
     })
 
-    await this.usersRepository.create(admin)
+    await this.usersRepository.create(admin as unknown as User)
 
     return success({})
   }

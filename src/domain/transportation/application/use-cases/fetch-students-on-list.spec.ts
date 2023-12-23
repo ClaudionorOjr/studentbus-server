@@ -46,10 +46,7 @@ describe('Fetch students on list use case', () => {
 
   it('should be able to fetch students on list', async () => {
     await Promise.all([
-      usersRepository.create(makeUser({}, 'user-01')),
       studentsRepository.create(makeStudent({}, 'user-01')),
-
-      usersRepository.create(makeUser({}, 'user-02')),
       studentsRepository.create(makeStudent({}, 'user-02')),
     ])
 
@@ -72,8 +69,8 @@ describe('Fetch students on list use case', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.value).toEqual({
       studentsOnList: expect.arrayContaining([
-        expect.objectContaining({ userId: 'user-01' }),
-        expect.objectContaining({ userId: 'user-02' }),
+        expect.objectContaining({ studentId: 'user-01' }),
+        expect.objectContaining({ studentId: 'user-02' }),
       ]),
     })
 

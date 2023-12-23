@@ -2,7 +2,6 @@ import { inject, injectable } from 'tsyringe'
 import { Responsible } from '@account/enterprise/entities/responsible'
 import { ResponsiblesRepository } from '../repositories/responsibles-repository'
 import { StudentsRepository } from '../repositories/students-repository'
-import { UsersRepository } from '../repositories/users-repository'
 import { Either, failure, success } from '@core/either'
 import { UnregisteredUserError } from '@core/errors/unregistered-user-error'
 
@@ -21,8 +20,6 @@ type EditStudentProfileUseCaseResponse = Either<UnregisteredUserError, object>
 @injectable()
 export class EditStudentProfileUseCase {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: UsersRepository,
     @inject('StudentsRepository')
     private studentsRepository: StudentsRepository,
     @inject('ResponsiblesRepository')
@@ -38,24 +35,16 @@ export class EditStudentProfileUseCase {
     responsiblePhone,
     degreeOfKinship,
   }: EditStudentProfileUseCaseRequest): Promise<EditStudentProfileUseCaseResponse> {
-    const user = await this.usersRepository.findById(userId)
-
-    if (!user) {
-      return failure(new UnregisteredUserError())
-    }
-
     const student = await this.studentsRepository.findByUserId(userId)
 
     if (!student) {
       return failure(new UnregisteredUserError())
     }
 
-    user.completeName = completeName ?? user.completeName
-    user.phone = phone ?? user.phone
-
+    student.completeName = completeName ?? student.completeName
+    student.phone = phone ?? student.phone
     student.birthdate = birthdate ?? student.birthdate
 
-    await this.usersRepository.save(user)
     await this.studentsRepository.save(student)
 
     const responsible = await this.responsiblesRepository.findByStudentId(
@@ -80,7 +69,7 @@ export class EditStudentProfileUseCase {
       degreeOfKinship
     ) {
       const responsible = Responsible.create({
-        userId: student.id,
+        studentId: student.id,
         responsibleName,
         responsiblePhone,
         degreeOfKinship,

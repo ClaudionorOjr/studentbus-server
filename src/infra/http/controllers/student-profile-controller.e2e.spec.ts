@@ -25,10 +25,9 @@ describe('Student profile (e2e)', () => {
   })
 
   test('[GET] /students/me', async () => {
-    const user = await userFactory.makePrismaUser({ role: 'STUDENT' })
-    await userFactory.makePrismaStudent({}, user.id)
+    const student = await userFactory.makePrismaStudent()
 
-    const accessToken = await jwtEncrypter.encrypt({ sub: user.id })
+    const accessToken = await jwtEncrypter.encrypt({ sub: student.id })
 
     const response = await request(app.server)
       .get('/students/me')
@@ -39,13 +38,13 @@ describe('Student profile (e2e)', () => {
 
     const userOnDatabase = await prisma.user.findUnique({
       where: {
-        id: user.id,
+        id: student.id,
       },
     })
 
     const studentOnDatabase = await prisma.student.findUnique({
       where: {
-        userId: user.id,
+        userId: student.id,
       },
     })
 

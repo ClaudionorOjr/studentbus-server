@@ -30,9 +30,9 @@ export class DeleteYourAccountUseCase {
 
     if (user.role === 'STUDENT') {
       await this.studentsRepository.delete(user.id)
+    } else {
+      await this.usersRepository.delete(user.id)
     }
-
-    await this.usersRepository.delete(user.id)
 
     return success({})
   }

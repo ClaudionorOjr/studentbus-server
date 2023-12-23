@@ -1,5 +1,7 @@
 import { Student } from '@account/enterprise/entities/student'
-import { Prisma, Student as RawStudent } from '@prisma/client'
+import { Prisma, User as RawUser, Student as RawStudent } from '@prisma/client'
+
+type Raw = RawStudent & { user: RawUser }
 
 export class PrismaStudentMapper {
   /**
@@ -20,11 +22,18 @@ export class PrismaStudentMapper {
    * Converts a Prisma raw student object to a `Student` domain object.
    *
    * @param {RawStudent} raw - The Prisma raw student object to be converted.
-   * @returns {Student} - The converted `Student` domain object.
+   * @return {Student} - The converted `Student` domain object.
    */
-  static toDomain(raw: RawStudent): Student {
+  static toDomain(raw: Raw): Student {
     return Student.create(
       {
+        completeName: raw.user.completeName,
+        email: raw.user.email,
+        passwordHash: raw.user.password,
+        phone: raw.user.phone,
+        role: raw.user.role,
+        createdAt: raw.user.createdAt,
+        updatedAt: raw.user.updatedAt,
         birthdate: raw.birthdate,
         validatedAt: raw.validatedAt,
       },

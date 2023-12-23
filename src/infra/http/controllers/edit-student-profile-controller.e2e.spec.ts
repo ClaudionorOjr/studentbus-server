@@ -26,10 +26,9 @@ describe('Edit student profile (e2e)', () => {
   })
 
   test('[PUT] /students/me', async () => {
-    const user = await userFactory.makePrismaUser({ role: 'STUDENT' })
-    await userFactory.makePrismaStudent({}, user.id)
+    const student = await userFactory.makePrismaStudent()
 
-    const accessToken = await jwtEncrypter.encrypt({ sub: user.id })
+    const accessToken = await jwtEncrypter.encrypt({ sub: student.id })
 
     const response = await request(app.server)
       .put('/students/me')
@@ -47,19 +46,19 @@ describe('Edit student profile (e2e)', () => {
 
     const updatedUser = await prisma.user.findUnique({
       where: {
-        id: user.id,
+        id: student.id,
       },
     })
 
     const updatedStudent = await prisma.student.findUnique({
       where: {
-        userId: user.id,
+        userId: student.id,
       },
     })
 
     const updatedResponsible = await prisma.responsible.findFirst({
       where: {
-        userId: user.id,
+        studentId: student.id,
       },
     })
 

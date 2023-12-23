@@ -37,9 +37,8 @@ describe('Delete your account (e2e)', () => {
   })
 
   test('[DELETE] /me', async () => {
-    const user = await userFactory.makePrismaUser({ role: 'STUDENT' })
-    await userFactory.makePrismaStudent({}, user.id)
-    const accessToken = await jwtEncrypter.encrypt({ sub: user.id })
+    const student = await userFactory.makePrismaStudent()
+    const accessToken = await jwtEncrypter.encrypt({ sub: student.id })
 
     const response = await request(app.server)
       .delete('/me')
@@ -50,13 +49,13 @@ describe('Delete your account (e2e)', () => {
 
     const deletedUser = await prisma.user.findUnique({
       where: {
-        id: user.id,
+        id: student.id,
       },
     })
 
     const deletedStudent = await prisma.student.findUnique({
       where: {
-        userId: user.id,
+        userId: student.id,
       },
     })
 

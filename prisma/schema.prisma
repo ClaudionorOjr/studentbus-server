@@ -26,8 +26,7 @@ model User {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
 
-  students     Student[]
-  responsibles Responsible[]
+  students Student[]
 
   @@map("users")
 }
@@ -37,19 +36,20 @@ model Student {
   birthdate   DateTime
   validatedAt DateTime @map("validated_at")
 
-  user User @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  responsibles Responsible[]
 
   @@map("students")
 }
 
 model Responsible {
   id              String @id
-  userId          String @map("user_id")
+  studentId       String @map("student_id")
   name            String
   phone           String
   degreeOfKinship String @map("degree_of_kinship")
 
-  user User @relation(fields: [userId], references: [id])
+  student Student @relation(fields: [studentId], references: [userId], onDelete: Cascade)
 
   @@map("responsibles")
 }

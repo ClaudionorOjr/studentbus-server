@@ -33,8 +33,8 @@ describe('Delete your account use case', () => {
   })
 
   it('should be able to delete a student account', async () => {
-    await usersRepository.create(makeUser({}, 'user-01'))
     await studentsRepository.create(makeStudent({}, 'user-01'))
+
     expect(usersRepository.users).toHaveLength(1)
     expect(studentsRepository.students).toHaveLength(1)
 

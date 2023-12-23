@@ -1,15 +1,15 @@
 import { Entity } from '@core/entities/entity'
 
 export interface ResponsibleProps {
-  userId: string
+  studentId: string
   responsibleName: string
   responsiblePhone: string
   degreeOfKinship: string
 }
 
 export class Responsible extends Entity<ResponsibleProps> {
-  get userId() {
-    return this.props.userId
+  get studentId() {
+    return this.props.studentId
   }
 
   get responsibleName() {

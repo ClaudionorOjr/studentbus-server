@@ -24,7 +24,6 @@ describe('Register student use case', () => {
     )
     sut = new RegisterStudentUseCase(
       solicitationsRepository,
-      usersRepository,
       studentsRepository,
       responsiblesRepository,
     )
@@ -32,7 +31,7 @@ describe('Register student use case', () => {
 
   it('should be able to register a student', async () => {
     await solicitationsRepository.create(
-      await makeSolicitation({}, 'solicitation-01'),
+      makeSolicitation({}, 'solicitation-01'),
     )
 
     expect(solicitationsRepository.solicitations).toHaveLength(1)

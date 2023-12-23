@@ -17,17 +17,17 @@ export class PrismaResponsiblesRepository implements ResponsiblesRepository {
   }
 
   async findByStudentId(studentId: string): Promise<Responsible | null> {
-    const student = await this.prisma.responsible.findFirst({
+    const responsible = await this.prisma.responsible.findFirst({
       where: {
-        userId: studentId,
+        studentId,
       },
     })
 
-    if (!student) {
+    if (!responsible) {
       return null
     }
 
-    return PrismaResponsibleMapper.toDomain(student)
+    return PrismaResponsibleMapper.toDomain(responsible)
   }
 
   async save(responsible: Responsible): Promise<void> {
@@ -38,6 +38,14 @@ export class PrismaResponsiblesRepository implements ResponsiblesRepository {
         id: data.id,
       },
       data,
+    })
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.responsible.delete({
+      where: {
+        id,
+      },
     })
   }
 }

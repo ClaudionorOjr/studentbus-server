@@ -8,12 +8,12 @@ export async function studentProfile(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const userId = request.user.sub
+  const studentId = request.user.sub
 
   try {
     const studentProfileUseCase = container.resolve(StudentProfileUseCase)
 
-    const result = await studentProfileUseCase.execute({ userId })
+    const result = await studentProfileUseCase.execute({ studentId })
 
     if (result.isFailure()) {
       throw result.value

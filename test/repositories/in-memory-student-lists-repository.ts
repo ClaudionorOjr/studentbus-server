@@ -51,7 +51,7 @@ export class InMemoryStudentListsRepository implements StudentListsRepository {
         (student) => student.id === profile.userId,
       )
       const responsible = this.responsiblesRepository.responsibles.find(
-        (responsible) => responsible.userId === profile.userId,
+        (responsible) => responsible.studentId === profile.userId,
       )
 
       if (!user || !student) {
@@ -59,7 +59,6 @@ export class InMemoryStudentListsRepository implements StudentListsRepository {
       }
 
       return StudentProfile.create({
-        userId: user.id,
         completeName: user.completeName,
         email: user.email,
         phone: user.phone,

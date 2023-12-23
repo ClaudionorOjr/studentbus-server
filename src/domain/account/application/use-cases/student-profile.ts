@@ -5,7 +5,7 @@ import { Either, failure, success } from '@core/either'
 import { ResourceNotFoundError } from '@core/errors/resource-not-found-error'
 
 export interface StudentProfileUseCaseRequest {
-  userId: string
+  studentId: string
 }
 
 type StudentProfileUseCaseResponse = Either<
@@ -23,9 +23,9 @@ export class StudentProfileUseCase {
   ) {}
 
   async execute({
-    userId,
+    studentId,
   }: StudentProfileUseCaseRequest): Promise<StudentProfileUseCaseResponse> {
-    const studentProfile = await this.studentsRepository.getProfile(userId)
+    const studentProfile = await this.studentsRepository.getProfile(studentId)
 
     if (!studentProfile) {
       return failure(new ResourceNotFoundError())

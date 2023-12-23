@@ -13,7 +13,7 @@ export class PrismaResponsibleMapper {
   ): Prisma.ResponsibleUncheckedCreateInput {
     return {
       id: responsible.id,
-      userId: responsible.userId,
+      studentId: responsible.studentId,
       name: responsible.responsibleName,
       phone: responsible.responsiblePhone,
       degreeOfKinship: responsible.degreeOfKinship,
@@ -29,7 +29,7 @@ export class PrismaResponsibleMapper {
   static toDomain(raw: RawResponsible): Responsible {
     return Responsible.create(
       {
-        userId: raw.userId,
+        studentId: raw.studentId,
         responsibleName: raw.name,
         responsiblePhone: raw.phone,
         degreeOfKinship: raw.degreeOfKinship,
