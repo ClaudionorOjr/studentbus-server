@@ -70,8 +70,16 @@ model Solicitation {
   responsiblePhone String?  @map("responsible_phone")
   degreeOfKinship  String?  @map("degree_of_kinship")
   note             String?
+  refuseReason     String?  @map("refuse_reason")
   status           Status   @default(PENDING)
   createdAt        DateTime @default(now()) @map("created_at")
 
   @@map("solicitations")
+}
+
+model Institution {
+  id   String @id @default(uuid())
+  name String @unique
+
+  @@map("institutions")
 }

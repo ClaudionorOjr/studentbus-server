@@ -1,12 +1,12 @@
 import 'reflect-metadata'
-import { PrismaService } from '@infra/database/prisma'
 import { FastifyInstance } from 'fastify'
+import { PrismaService } from '@infra/database/prisma'
 import { UserFactory } from 'test/factories/make-user'
 import { SolicitationFactory } from 'test/factories/make-solicitation'
 import { JwtEncrypter } from '@infra/cryptography/jwt-encrypter'
 import request from 'supertest'
 
-describe('Register student (e2e)', () => {
+describe('Refuse solicitation (e2e)', () => {
   let app: FastifyInstance
   let prisma: PrismaService
   let userFactory: UserFactory
@@ -22,14 +22,12 @@ describe('Register student (e2e)', () => {
 
     await app.ready()
   })
-
   afterAll(async () => {
     await app.close()
   })
 
-  test('[POST] /solicitations/:solicitationId/register', async () => {
+  test('[PATCH] /solicitations/:solicitationId/refuse', async () => {
     const user = await userFactory.makePrismaUser({ role: 'ADMIN' })
-
     const accessToken = await jwtEncrypter.encrypt({
       sub: user.id,
       role: 'ADMIN',
@@ -38,25 +36,21 @@ describe('Register student (e2e)', () => {
     const solicitation = await solicitationFactory.makePrismaSolicitation()
 
     const response = await request(app.server)
-      .post(`/solicitations/${solicitation.id}/register`)
+      .patch(`/solicitations/${solicitation.id}/refuse`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send()
+      .send({
+        refuseReason: 'refuse solicitation',
+      })
 
-    expect(response.statusCode).toEqual(201)
+    expect(response.statusCode).toEqual(204)
 
-    const userOnDatabase = await prisma.user.findUnique({
+    const refusedSolicitation = await prisma.solicitation.findUnique({
       where: {
         id: solicitation.id,
       },
     })
 
-    const studentOnDatabase = await prisma.student.findUnique({
-      where: {
-        userId: solicitation.id,
-      },
-    })
-
-    expect(studentOnDatabase).toBeTruthy()
-    expect(userOnDatabase).toBeTruthy()
+    expect(refusedSolicitation).toBeTruthy()
+    expect(refusedSolicitation?.status).toEqual('REFUSED')
   })
 })

@@ -21,6 +21,9 @@ import { PrismaResponsiblesRepository } from '@infra/database/prisma/repositorie
 import { DatabaseProvider } from '../database/database-provider'
 import { PrismaService } from '@infra/database/prisma'
 
+import { InstitutionsRepository } from '@institutional/application/repositories/institutions-repository'
+import { PrismaInstitutionsRepository } from '@infra/database/prisma/repositories/prisma-institutions-repository'
+
 container.registerSingleton<DatabaseProvider>('Prisma', PrismaService)
 
 container.registerSingleton<Hasher>('Hasher', BcryptHasher)
@@ -45,4 +48,9 @@ container.registerSingleton<SolicitationsRepository>(
 container.registerSingleton<ResponsiblesRepository>(
   'ResponsiblesRepository',
   PrismaResponsiblesRepository,
+)
+
+container.registerSingleton<InstitutionsRepository>(
+  'InstitutionsRepository',
+  PrismaInstitutionsRepository,
 )

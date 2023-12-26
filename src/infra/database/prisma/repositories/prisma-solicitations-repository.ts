@@ -36,6 +36,17 @@ export class PrismaSolicitatitonsRepository implements SolicitationsRepository {
     return solicitations.map(PrismaSolicitationMapper.toDomain)
   }
 
+  async save(solicitation: Solicitation): Promise<void> {
+    const data = PrismaSolicitationMapper.toPrisma(solicitation)
+
+    await this.prisma.solicitation.update({
+      where: {
+        id: solicitation.id,
+      },
+      data,
+    })
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.solicitation.delete({
       where: {

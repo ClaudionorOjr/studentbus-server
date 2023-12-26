@@ -2,6 +2,7 @@ import { Either, failure, success } from '@core/either'
 import { Institution } from '../../enterprise/entities/institution'
 import { InstitutionsRepository } from '../repositories/institutions-repository'
 import { InstitutionAlreadyExistsError } from './errors/institution-already-exists-error'
+import { inject, injectable } from 'tsyringe'
 
 interface RegisterInstitutionUseCaseRequest {
   name: string
@@ -12,8 +13,12 @@ type RegisterInstitutionUseCaseResponse = Either<
   object
 >
 
+@injectable()
 export class RegisterInstitutionUseCase {
-  constructor(private institutionsRepository: InstitutionsRepository) {}
+  constructor(
+    @inject('InstitutionsRepository')
+    private institutionsRepository: InstitutionsRepository,
+  ) {}
 
   async execute({
     name,

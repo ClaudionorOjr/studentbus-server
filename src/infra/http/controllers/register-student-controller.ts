@@ -11,7 +11,7 @@ export async function registerStudent(
   reply: FastifyReply,
 ) {
   const registerStudentParamsSchema = z.object({
-    solicitationId: z.string(),
+    solicitationId: z.string().uuid(),
   })
 
   const { solicitationId } = registerStudentParamsSchema.parse(request.params)

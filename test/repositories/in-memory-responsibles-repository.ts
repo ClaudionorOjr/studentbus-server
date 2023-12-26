@@ -27,4 +27,12 @@ export class InMemoryResponsiblesRepository implements ResponsiblesRepository {
 
     this.responsibles[studentIndex] = responsible
   }
+
+  async delete(id: string): Promise<void> {
+    const responsibleIndex = this.responsibles.findIndex(
+      (responsible) => responsible.id === id,
+    )
+
+    this.responsibles.splice(responsibleIndex, 1)
+  }
 }

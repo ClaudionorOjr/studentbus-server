@@ -27,6 +27,14 @@ export class InMemorySolicitationsRepository
     )
   }
 
+  async save(solicitation: Solicitation): Promise<void> {
+    const solicitationIndex = this.solicitations.findIndex(
+      (item) => item.id === solicitation.id,
+    )
+
+    this.solicitations[solicitationIndex] = solicitation
+  }
+
   async delete(id: string): Promise<void> {
     const solicitionIndex = this.solicitations.findIndex(
       (solicitation) => solicitation.id === id,

@@ -10,6 +10,7 @@ export interface SolicitationProps
   responsiblePhone?: string | null
   degreeOfKinship?: string | null
   note?: string | null
+  refuseReason?: string | null
   status: 'PENDING' | 'REFUSED'
 }
 
@@ -57,6 +58,16 @@ export class Solicitation extends Entity<SolicitationProps> {
 
   get status() {
     return this.props.status
+  }
+
+  get refuseReason() {
+    return this.props.refuseReason
+  }
+
+  /* METHODS */
+  public refuse(refuseReason: string) {
+    this.props.status = 'REFUSED'
+    this.props.refuseReason = refuseReason
   }
 
   static create(
